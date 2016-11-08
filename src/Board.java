@@ -8,8 +8,6 @@ public class Board {
     private BoardRange boardRange;
 
 
-
-
     public Board(int size)
     {
         boardSize = size;
