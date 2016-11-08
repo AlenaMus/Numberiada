@@ -2,6 +2,7 @@
  * Created by Alona on 11/7/2016.
  */
 public class BoardRange {
+
     private int from;
     private int to;
 

@@ -4,6 +4,7 @@
 public class Marker {
 
     private Point markerLocation;
+    public static final char markerSign = '*';
 
     public Marker(int row,int col)
     {
@@ -23,4 +24,9 @@ public class Marker {
         markerLocation.setRow(row);
         markerLocation.setCol(col);
     }
+
+
+
+
+
 }

@@ -3,6 +3,6 @@
  */
 public enum eGameType {
     BASIC,
-    ADVANCE,
-    ADVANCE_DYNAMIC
+    ADVANCED,
+    ADVANCED_DYNAMIC
 }
