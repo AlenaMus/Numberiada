@@ -8,13 +8,14 @@ public class Square {
     private int value;
 
 
-    public Square(Point location, boolean isEmpty, int value) {
+    public Square(Point location) {
         this.location = location;
-        this.isEmpty = isEmpty;
-        this.value = value;
+        this.isEmpty = true;
     }
 
-    public Square(){}
+    public Square(){
+        this.isEmpty = true;
+    }
 
     public Point getLocation() {
         return location;
