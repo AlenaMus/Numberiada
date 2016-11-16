@@ -1,7 +1,7 @@
 /**
  * Created by Alona on 11/7/2016.
  */
-
+package game_objects;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -23,6 +23,11 @@ public class Board {
     public Board(int size)
     {
         boardSize = size;
+    }
+
+    public int getBoardSize()
+    {
+        return boardSize;
     }
 
     public void CreateBoard(eBoardType boardType) {
@@ -76,7 +81,6 @@ public class Board {
           size--;
         }
 
-
         for(int m=i; m<boardSize; m++)
         {
             for(int n=j; n<boardSize; n++)
@@ -87,6 +91,8 @@ public class Board {
         }
 
         shuffleArray(gameBoard);
+
+        /// remember to set a location for Marker
 
     }
 
@@ -106,14 +112,6 @@ public class Board {
                 matrix[m][n].setValue(temp);
             }
         }
-    }
-
-    /**
-     * fills values to the board matrix
-     */
-    private void fillBoard()
-    {
-
     }
 
     @Override

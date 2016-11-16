@@ -1,6 +1,8 @@
 /**
  * Created by Alona on 11/7/2016.
  */
+package game_objects;
+
 public class Marker {
 
     private Point markerLocation;
