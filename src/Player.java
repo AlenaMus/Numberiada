@@ -12,6 +12,14 @@ public class Player {
     private int score;
     private int numOfMoves;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 
 
 
