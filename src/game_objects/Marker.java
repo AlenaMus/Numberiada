@@ -1,17 +1,16 @@
-/**
- * Created by Alona on 11/7/2016.
- */
+
 package game_objects;
 
 public class Marker {
 
     private Point markerLocation;
-    public static final char markerSign = '*';
+    public static final String markerSign = "@";
 
     public Marker(int row,int col)
     {
         markerLocation = new Point(row,col);
     }
+   // public static String GetMarker() { return markerSign;}
 
     public Point getMarkerLocation() {
         return markerLocation;

@@ -26,6 +26,16 @@ public class BoardRange {
         return to;
     }
 
+    public int RangeSize()
+    {
+       int range = to - from;
+        if (from <= 0)
+        {
+            range++;
+        }
+        return range;
+    }
+
     public void setTo(int to) {
         this.to = to;
     }

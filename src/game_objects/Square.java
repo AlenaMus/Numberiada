@@ -9,16 +9,25 @@ public class Square {
 
     private Point location;
     private boolean isEmpty;
-    private int value;
+   // private int value;
+    private String value;
 
 
     public Square(Point location) {
         this.location = location;
         this.isEmpty = true;
+        this.value = "";
     }
 
     public Square(){
         this.isEmpty = true;
+    }
+
+    public Square(Point location, String value)
+    {
+        this.isEmpty = false;
+        this.location = new Point(location.getRow(),location.getCol());
+        this.value = value;
     }
 
     public Point getLocation() {
@@ -37,13 +46,56 @@ public class Square {
         isEmpty = empty;
     }
 
-    public int getValue() {
-        return value;
+    public String getValue(){return value;}
+    public void setValue(String value)
+    {
+        this.value = value;
+        if(value.equals(""))
+        {
+            this.setEmpty(true);
+        }
+        else
+        {
+            this.setEmpty(false);
+        }
     }
 
-    public void setValue(int value) {
-        this.value = value;
+
+    public static int ConvertFromStringToIntValue(String value)
+    {
+        int num = 0;
+        if(value != null && !value.equals(Marker.markerSign))
+        {
+            num = Integer.parseInt(value);
+        }
+
+        return num;
+
     }
+
+    public static String ConvertFromIntToStringValue(int value)
+    {
+        String valueS = "";
+        if(value > 0)
+        {
+            valueS=Integer.toString(value);
+        }
+        else
+        {
+            valueS =Integer.toString(value);
+        }
+
+        return valueS;
+    }
+
+    public boolean isMarker(String value)
+    {
+        boolean isMarker = value.equals(Marker.markerSign)?true:false;
+        return isMarker;
+    }
+
+
+
 
 
 
