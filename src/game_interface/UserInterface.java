@@ -8,9 +8,6 @@ import game_engine.eTurn;
 import game_objects.Board;
 import game_objects.Point;
 
-/**
- * Created by Alona on 11/7/2016.
- */
 public final class UserInterface {
 
 
@@ -31,7 +28,7 @@ public final class UserInterface {
 
     public static void PrintFirstMenu()
     {
-        System.out.println("Welcome To Numberiada!");
+        System.out.println("    Welcome To Numberiada!");
         System.out.println("============================");
         System.out.println("|            MENU           |");
         System.out.println("============================");
@@ -72,16 +69,22 @@ public final class UserInterface {
         System.out.print(gameBoard);
     }
 
-    public static int GetUserMove(Point markerLocation,eTurn turn,int boardSize) //we need to know if the user need to choose raw or col
+    public static void PrintCurrentPlayer(eTurn turn,Point markerLocation)
     {
-        int userMove;
-        Scanner userInputScan = new Scanner(System.in);
         if (turn == eTurn.ROW) {
             System.out.println("Row Player ,please enter number of square in row "+ markerLocation.getRow());
         }
         else if (turn == eTurn.COL){
             System.out.println("Column Player,please enter number of square in col "+ markerLocation.getCol());
         }
+    }
+
+    public static int GetUserMove(Point markerLocation,eTurn turn,int boardSize) //we need to know if the user need to choose raw or col
+    {
+        int userMove;
+        Scanner userInputScan = new Scanner(System.in);
+        PrintCurrentPlayer(turn,markerLocation);
+
         if (userInputScan.hasNextInt()) {
             userMove = userInputScan.nextInt();
         } else {

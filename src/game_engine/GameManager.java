@@ -6,18 +6,15 @@ import game_objects.Board;
 import game_objects.Marker;
 import game_objects.Player;
 import game_objects.Point;
-import game_objects.Square;
 import jaxb.schema.generated.*;
 import org.xml.sax.SAXException;
 
-import javax.jws.soap.SOAPBinding;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import java.awt.*;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,14 +22,19 @@ import java.util.logging.Logger;
 
 public class GameManager {
 
-    public static final int LoadGame = 1;
-    public static final int StartGame = 2;
-    public static final int ExitGame = 3;
+    public static final int LOAD_GAME = 1;
+    public static final int START_GAME = 2;
+    public static final int EXIT_GAME = 3;
+
+    public static final int SHOW_BOARD_AND_CURRENT_PLAYER = 1;
+    public static final int MAKE_A_MOVE = 2;
+    public static final int SHOW_STATISTICS = 3;
+    public static final int LEAVE_GAME = 4;
 
 
     protected boolean isLoadedGame = false;
     protected Player currentPlayer;
-    protected String gameFile= " ";
+    protected String gameFile = " ";
     protected int numOfPlayers;
     protected eGameType gameType;
     protected boolean isEndOfGame = false;
@@ -40,31 +42,53 @@ public class GameManager {
     protected Marker marker;
     private Player rowPlayer;
     private Player colPlayer;
+    private double totalTime;
+    private final long StartTime = System.currentTimeMillis();
+    private long endTime;
 
-   public GameManager()
-   {
-      startGame();
-   }
 
-   public void startGame()
-   {
-       UserInterface.PrintFirstMenu();
-       int userChoise = UserInterface.GetUserInput(1,3);
-       switch (userChoise)
-       {
-           case LoadGame:  LoadGameFromXmlAndValidate();
-                           isLoadedGame = true;
-                           break;
-           case StartGame: if (!isLoadedGame) /*****Change it */
-                                initGame();
-                             else
-                                 UserInterface.PrintUserMessage("Cannot start game. You need to load file game first!");
-                                 break;
-           case ExitGame: exitGame();
-               break;
-       }
 
-   }
+    public GameManager() {
+        startGame();
+    }
+
+    public long TotalGameTime()
+    {
+       long gameTime = System.currentTimeMillis() - StartTime;
+        this.totalTime = gameTime / 1000.0;
+        return gameTime;
+    }
+
+    public void startGame() {
+        UserInterface.PrintFirstMenu();
+        int userChoise = UserInterface.GetUserInput(1, 3);
+        switch (userChoise) {
+            case LOAD_GAME:
+                LoadGameFromXmlAndValidate();
+                isLoadedGame = true;
+                break;
+            case START_GAME:
+                if (!isLoadedGame) /*****Change it */
+                    initGame();
+                else
+                    UserInterface.PrintUserMessage("Cannot start game. You need to load file game first!");
+                break;
+            case EXIT_GAME:
+                exitGame();
+                break;
+        }
+
+    }
+
+    private void setEndOfGame()
+    {
+        if(isEndOfGame)
+        {
+            this.endTime = System.currentTimeMillis();
+        }
+
+
+    }
 
 
 
@@ -90,14 +114,13 @@ public class GameManager {
         if(setGameBoard())
         {
             UserInterface.PrintBoard(gameBoard.toString());
-
         }
         else
         {
             UserInterface.PrintValidationErrors();
         }
 
-        //  gameLoop();
+          gameLoop();
     }
 
     private boolean setGameBoard() // (eBoardType type, int boardSize, BoardRange range)
@@ -111,59 +134,77 @@ public class GameManager {
         return isFilledBoard;
     }
 
-    private void gameLoop()
+    private void gameLoop() {
+
+        int option;
+
+        currentPlayer = rowPlayer;
+        UserInterface.PrintUserMessage("Lets Start the Game ...\n Choose an option from the menu below :");
+        UserInterface.PrintSecondMenu();
+
+        while (!isGameOver(marker.getMarkerLocation())) {
+
+            option = UserInterface.GetUserInput(SHOW_BOARD_AND_CURRENT_PLAYER, LEAVE_GAME);
+
+            switch (option) {
+                case SHOW_BOARD_AND_CURRENT_PLAYER: UserInterface.PrintBoard(gameBoard.toString());
+                                                    UserInterface.PrintCurrentPlayer(currentPlayer.getTurn(),marker.getMarkerLocation());
+                                                    break;
+                case MAKE_A_MOVE: makeMove(currentPlayer.getTurn());
+                                    break;
+                case SHOW_STATISTICS:UserInterface.ShowStatistics(rowPlayer.getNumOfMoves()+colPlayer.getNumOfMoves(),TotalGameTime(),rowPlayer.getScore(),colPlayer.getScore());
+                                     break;
+                case LEAVE_GAME: exitGame();
+                                 break;
+
+            }
+        }
+
+        setEndOfGame();
+    }
+
+    private void makeMove(eTurn playerTurn)
     {
         int chosenSquare;
         int squareValue;
         Point squareLocation = null;
-        currentPlayer = rowPlayer;
-        UserInterface.PrintUserMessage("Lets Start the Game ...");
-        UserInterface.PrintSecondMenu();
-
-
-        while(!isGameOver(marker.getMarkerLocation()))
+        switch (currentPlayer.getTurn())
         {
-              switch (currentPlayer.getTurn())
-            {
-                case ROW: chosenSquare=UserInterface.GetUserMove(marker.getMarkerLocation(),eTurn.ROW,gameBoard.GetBoardSize());
-                             squareLocation = new Point(chosenSquare,marker.getMarkerLocation().getCol());
-                             break;
+            case ROW: chosenSquare=UserInterface.GetUserMove(marker.getMarkerLocation(),eTurn.ROW,gameBoard.GetBoardSize());
+                squareLocation = new Point(chosenSquare,marker.getMarkerLocation().getCol());
+                break;
 
-                case COL: chosenSquare=UserInterface.GetUserMove(marker.getMarkerLocation(),eTurn.COL,gameBoard.GetBoardSize());
-                          squareLocation = new Point(marker.getMarkerLocation().getRow(),chosenSquare);
-                           break;
-
-            }
-
-            //squareValue=updateBoard(squareLocation); //update 2 squares
-           // updateUserData(squareValue); //update score and moves
-            marker.setMarkerLocation(squareLocation);
-            UserInterface.PrintBoard(gameBoard.toString());
-            UserInterface.PrintSecondMenu();
-            if(currentPlayer.equals(rowPlayer))
-            {
-                currentPlayer = colPlayer;
-            }
-            else
-            {
-                currentPlayer = rowPlayer;
-            }
-
+            case COL: chosenSquare=UserInterface.GetUserMove(marker.getMarkerLocation(),eTurn.COL,gameBoard.GetBoardSize());
+                squareLocation = new Point(marker.getMarkerLocation().getRow(),chosenSquare);
+                break;
         }
 
+        squareValue=updateBoard(squareLocation); //update 2 squares
+        updateUserData(squareValue); //update score and moves
+        marker.setMarkerLocation(squareLocation);
+        UserInterface.PrintBoard(gameBoard.toString());
+        UserInterface.PrintSecondMenu();
+        if(currentPlayer.equals(rowPlayer))
+        {
+            currentPlayer = colPlayer;
+        }
+        else
+        {
+            currentPlayer = rowPlayer;
+        }
 
     }
 
+    private void updateUserData(int squareValue) // in Player?
+    {
 
-//    private void updateUserData(int squareValue) // in Player?
-//    {
-//
-//    }
-//
-//    private int updateBoard(Point squareLocation) //implement in Board
-//    {
-//
-//    }
+    }
+
+    private int updateBoard(Point squareLocation) //implement in Board - returns updated value of row/column
+    {
+
+        return 0;
+    }
 
 
     private boolean isGameOver(Point markerLocation)
@@ -173,12 +214,12 @@ public class GameManager {
         return isGameOver;
     }
 
- private void exitGame()
- {
+   private void exitGame()
+   {
 
- }
+   }
 
-    public void SetBoard(eBoardType boardType , int boardSize, BoardRange range)
+    public void SetBoard(eBoardType boardType,int boardSize, BoardRange range)
     {
         gameBoard = new Board(boardSize,range,boardType);
 
