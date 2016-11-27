@@ -125,7 +125,7 @@ public class GameManager {
         currentPlayer = rowPlayer;
         UserInterface.PrintUserMessage("Lets Start the Game ...\n Choose an option from the menu below :");
         UserInterface.PrintSecondMenu();
-        marker.setMarkerLocation(5,5); //for DEBUG NULL EXCEPTION
+        marker= new Marker(5,5);//FOR DEBUG
         while (!isGameOver(marker.getMarkerLocation())) {
 
             option = UserInterface.GetUserInput(SHOW_BOARD_AND_CURRENT_PLAYER, LEAVE_GAME);
