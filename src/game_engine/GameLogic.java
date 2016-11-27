@@ -17,7 +17,7 @@ public final class GameLogic {
        return true;
     }
 
-    public static boolean IsGameOver(Board gameBoard)
+    public static boolean IsGameOver(Board gameBoard,Point MarkerLocation)
     {
         return true;
     }

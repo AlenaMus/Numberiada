@@ -146,9 +146,13 @@ public final class UserInterface {
 
     }
 
-    public static void PrintWinner()
+    public static void PrintWinner(String playerName)
     {
-        userInputScan.close();
+        if (playerName != "TIE") {
+            System.out.println("THE WINNER IS " + playerName);
+        }
+        else
+            System.out.println("Unbelieble there is a tie!!! no winner here...");
     }
 
 

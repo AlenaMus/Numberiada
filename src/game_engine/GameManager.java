@@ -2,22 +2,6 @@ package game_engine;
 
 import game_interface.UserInterface;
 import game_objects.*;
-import game_objects.Board;
-import game_objects.Marker;
-import game_objects.Player;
-import game_objects.Point;
-import jaxb.schema.generated.*;
-import org.xml.sax.SAXException;
-
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 public class GameManager {
@@ -64,14 +48,14 @@ public class GameManager {
         int userChoise = UserInterface.GetUserInput(1, 3);
         switch (userChoise) {
             case LOAD_GAME:
-                LoadGameFromXmlAndValidate();
+                //LoadGameFromXmlAndValidate();
                 isLoadedGame = true;
                 break;
             case START_GAME:
                 if (!isLoadedGame) /*****Change it */
                     initGame();
                 else
-                    UserInterface.PrintUserMessage("Cannot start game. You need to load file game first!");
+                    UserInterface.PrintUserMessage("Cannot start game. You need to load game file first!");
                 break;
             case EXIT_GAME:
                 exitGame();
@@ -141,7 +125,7 @@ public class GameManager {
         currentPlayer = rowPlayer;
         UserInterface.PrintUserMessage("Lets Start the Game ...\n Choose an option from the menu below :");
         UserInterface.PrintSecondMenu();
-
+        marker.setMarkerLocation(5,5); //for DEBUG NULL EXCEPTION
         while (!isGameOver(marker.getMarkerLocation())) {
 
             option = UserInterface.GetUserInput(SHOW_BOARD_AND_CURRENT_PLAYER, LEAVE_GAME);
@@ -179,7 +163,7 @@ public class GameManager {
                 break;
         }
 
-        squareValue=updateBoard(squareLocation); //update 2 squares
+        squareValue = updateBoard(squareLocation); //update 2 squares
         updateUserData(squareValue); //update score and moves
         marker.setMarkerLocation(squareLocation);
         UserInterface.PrintBoard(gameBoard.toString());
@@ -195,28 +179,43 @@ public class GameManager {
 
     }
 
-    private void updateUserData(int squareValue) // in Player?
-    {
-
-    }
 
     private int updateBoard(Point squareLocation) //implement in Board - returns updated value of row/column
     {
-
-        return 0;
+        int squareValue = gameBoard.updateBoard(squareLocation);
+        return squareValue;
     }
 
+
+    private void updateUserData(int squareValue) // in Player?
+    {
+        currentPlayer.setNumOfMoves(currentPlayer.getNumOfMoves()+1); //maybe do totalmoves var in gameManager
+        currentPlayer.setScore(currentPlayer.getScore() + squareValue);
+    }
 
     private boolean isGameOver(Point markerLocation)
     {
         boolean isGameOver = false;
-
+        isGameOver = gameBoard.isGameOver(markerLocation);
+        //GameLogic.IsGameOver(gameBoard,markerLocation);
         return isGameOver;
     }
 
    private void exitGame()
    {
+       int rowPlayerScore = rowPlayer.getScore();
+       int ColPlayerScore = colPlayer.getScore();
+       if (rowPlayerScore > ColPlayerScore)
+           UserInterface.PrintWinner(rowPlayer.getName());
+       else if (ColPlayerScore > rowPlayerScore )
+           UserInterface.PrintWinner(colPlayer.getName());
+           else //(ColPlayerScore  == rowPlayerScore )
+           UserInterface.PrintWinner("TIE");
 
+       UserInterface.PrintBoard(gameBoard.toString());
+       UserInterface.ShowStatistics(rowPlayer.getNumOfMoves()+colPlayer.getNumOfMoves(),TotalGameTime(),rowPlayer.getScore(),colPlayer.getScore());
+
+       //startGame();//go back to start game here
    }
 
     public void SetBoard(eBoardType boardType,int boardSize, BoardRange range)
@@ -233,7 +232,7 @@ public class GameManager {
 
 
 
-    public void LoadGameFromXmlAndValidate() {
+    /*public void LoadGameFromXmlAndValidate() {
         boolean isValidFile = false, isValidXML = false;
         String fileName = "";
         File gameFile;
@@ -354,5 +353,5 @@ public class GameManager {
             return null;
         }
     }
-
+*/
 }

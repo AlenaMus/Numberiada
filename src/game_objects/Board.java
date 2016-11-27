@@ -3,13 +3,8 @@
  */
 package game_objects;
 import game_interface.UserInterface;
-import jaxb.schema.generated.Range;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
-
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Board {
 
@@ -272,5 +267,31 @@ private void printMatrix()
 
         return board.toString();
     }
+
+    public int updateBoard(Point squareLocation)
+    {
+        Point oldMarkerPoint = marker.getMarkerLocation();                         //empty old marker location
+        gameBoard[oldMarkerPoint.getRow()][oldMarkerPoint.getCol()].setValue("");
+
+        String squareStringValue = gameBoard[squareLocation.getRow()][squareLocation.getCol()].getValue(); //get number
+        int squareValue = Square.ConvertFromStringToIntValue(squareStringValue); //return number value
+
+        gameBoard[squareLocation.getRow()][squareLocation.getCol()].setValue(marker.markerSign); //update marker to square
+
+        return squareValue;
+    }
+
+     public boolean isGameOver(Point markerLocation)
+     {
+         int MarkerRow = markerLocation.getRow();
+         int MarkerCol = markerLocation.getCol();
+         for (int i=0; i < boardSize; i++)
+             if ((gameBoard[MarkerRow][i].isEmpty() == false) && (gameBoard[MarkerRow][i].getValue()!= marker.markerSign))
+                 return false;
+             for (int i=0; i < boardSize; i++)
+                 if ((gameBoard[i][MarkerCol].isEmpty() == false)&& (gameBoard[MarkerRow][i].getValue()!= marker.markerSign))
+                     return false;
+         return true;
+     }
 
 }
