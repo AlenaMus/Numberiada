@@ -38,6 +38,15 @@ public class Board {
     public void SetBoardType(eBoardType type){boardType = type; }
 
 
+    public Marker getMarker() {
+        return marker;
+    }
+
+    public void setMarker(Marker marker) {
+        this.marker = marker;
+    }
+
+
 
     public void InitBoard()
     {

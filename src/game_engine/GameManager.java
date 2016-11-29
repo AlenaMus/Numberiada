@@ -2,6 +2,19 @@ package game_engine;
 
 import game_interface.UserInterface;
 import game_objects.*;
+import jaxb.schema.generated.GameDescriptor;
+import jaxb.schema.generated.Players;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+//import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import org.xml.sax.SAXException;
+import java.io.File;
 
 
 public class GameManager {
@@ -23,7 +36,6 @@ public class GameManager {
     protected eGameType gameType;
     protected boolean isEndOfGame = false;
     protected Board gameBoard;
-    protected Marker marker;
     private Player rowPlayer;
     private Player colPlayer;
     private double totalTime;
@@ -125,14 +137,14 @@ public class GameManager {
         currentPlayer = rowPlayer;
         UserInterface.PrintUserMessage("Lets Start the Game ...\n Choose an option from the menu below :");
         //UserInterface.PrintSecondMenu();
-        marker = new Marker(5,5);//FOR DEBUG NULL ERROR
-        while (!isGameOver(marker.getMarkerLocation())) {
+        // gameBoard.setMarker(5,5);
+        while (!isGameOver(gameBoard.getMarker().getMarkerLocation())) {
             UserInterface.PrintSecondMenu();
             option = UserInterface.GetUserInput(SHOW_BOARD_AND_CURRENT_PLAYER, LEAVE_GAME);
 
             switch (option) {
                 case SHOW_BOARD_AND_CURRENT_PLAYER: UserInterface.PrintBoard(gameBoard.toString());
-                                                    UserInterface.PrintCurrentPlayer(currentPlayer.getTurn(),marker.getMarkerLocation());
+                                                    UserInterface.PrintCurrentPlayer(currentPlayer.getTurn());
                                                     break;
                 case MAKE_A_MOVE: makeMove(currentPlayer.getTurn());
                                     break;
@@ -154,18 +166,18 @@ public class GameManager {
         Point squareLocation = null;
         switch (currentPlayer.getTurn())
         {
-            case ROW: chosenSquare=UserInterface.GetUserMove(marker.getMarkerLocation(),eTurn.ROW,gameBoard.GetBoardSize());
-                squareLocation = new Point(chosenSquare,marker.getMarkerLocation().getCol());
+            case ROW: chosenSquare=UserInterface.GetUserMove(gameBoard.getMarker().getMarkerLocation(),eTurn.ROW,gameBoard.GetBoardSize());
+                squareLocation = new Point(chosenSquare,gameBoard.getMarker().getMarkerLocation().getCol());
                 break;
 
-            case COL: chosenSquare=UserInterface.GetUserMove(marker.getMarkerLocation(),eTurn.COL,gameBoard.GetBoardSize());
-                squareLocation = new Point(marker.getMarkerLocation().getRow(),chosenSquare);
+            case COL: chosenSquare=UserInterface.GetUserMove(gameBoard.getMarker().getMarkerLocation(),eTurn.COL,gameBoard.GetBoardSize());
+                squareLocation = new Point(gameBoard.getMarker().getMarkerLocation().getRow(),chosenSquare);
                 break;
         }
 
         squareValue = updateBoard(squareLocation); //update 2 squares
         updateUserData(squareValue); //update score and moves
-        marker.setMarkerLocation(squareLocation);
+        gameBoard.getMarker().setMarkerLocation(squareLocation);
         UserInterface.PrintBoard(gameBoard.toString());
         UserInterface.PrintSecondMenu();
         if(currentPlayer.equals(rowPlayer))
@@ -232,7 +244,7 @@ public class GameManager {
 
 
 
-    /*public void LoadGameFromXmlAndValidate() {
+    public void LoadGameFromXmlAndValidate() {
         boolean isValidFile = false, isValidXML = false;
         String fileName = "";
         File gameFile;
@@ -271,25 +283,25 @@ public class GameManager {
         }
         else // game type ok
         {
-//            jaxb.schema.generated.Board loadedBoard = loadedGame.getBoard();
-//            if(loadedBoard) //check size & structure of board
-//            {
-//
-//            }
-//            else // board ok -- check players num
-//            {
-//
-//            }
+            jaxb.schema.generated.Board loadedBoard = loadedGame.getBoard();
+            if(loadedBoard!= null) //check size & structure of board
+            {
+
+            }
+            else // board ok -- check players num
+            {
+
+            }
         }
         jaxb.schema.generated.Players loadedPlayers = loadedGame.getPlayers();
 
-//        boolean currentPlayerExists = false;
-//
-//        if (loadedGame.getCurrentPlayer().trim().equals(""))
-//            isValidXMLData = false; // current player name is empty or whitespaces
-//
-//        if (loadedBoard.getCell().isEmpty())
-//            isValidXMLData = false;
+        boolean currentPlayerExists = false;
+
+     //   if (loadedGame.getCurrentPlayer().trim().equals(""))
+        //    isValidXMLData = false; // current player name is empty or whitespaces
+
+       // if (loadedBoard.getCell().isEmpty())
+         //   isValidXMLData = false;
 
         return isValidXMLData;
 
@@ -353,5 +365,4 @@ public class GameManager {
             return null;
         }
     }
-*/
 }

@@ -69,13 +69,13 @@ public final class UserInterface {
         System.out.print(gameBoard);
     }
 
-    public static void PrintCurrentPlayer(eTurn turn,Point markerLocation)
+    public static void PrintCurrentPlayer(eTurn turn)
     {
         if (turn == eTurn.ROW) {
-            System.out.println("Row Player ,please enter number of square in row "+ markerLocation.getRow());
+            System.out.println("current player is Row Player");
         }
         else if (turn == eTurn.COL){
-            System.out.println("Column Player,please enter number of square in col "+ markerLocation.getCol());
+            System.out.println(" current player is Column Player");
         }
     }
 
@@ -83,7 +83,12 @@ public final class UserInterface {
     {
         int userMove;
         Scanner userInputScan = new Scanner(System.in);
-        PrintCurrentPlayer(turn,markerLocation);
+        if (turn == eTurn.ROW) {
+            System.out.println("Row Player ,please enter number of square in row "+ markerLocation.getRow());
+        }
+        else if (turn == eTurn.COL){
+            System.out.println("Column Player,please enter number of square in col "+ markerLocation.getCol());
+        }
 
         if (userInputScan.hasNextInt()) {
             userMove = userInputScan.nextInt();
