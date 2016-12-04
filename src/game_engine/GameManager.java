@@ -73,7 +73,7 @@ public class GameManager {
                     UserInterface.PrintUserMessage("Cannot start game. You need to load game file first!");
                 break;
             case EXIT_GAME:
-                exitGame();
+                UserInterface.exitGameFromMainMenu();
                 break;
         }
 
@@ -186,7 +186,7 @@ public class GameManager {
             if (squareValue != BAD_SQUARE)
                 badInput = false;
             else
-                UserInterface.PrintUserMessage("You choose invalid square without number value.choose another one..!");
+                UserInterface.PrintUserMessage("You choose invalid square! you can't select empty squares/marker square.choose another one..!");
 
         }
         updateUserData(squareValue); //update score and moves
@@ -233,6 +233,7 @@ public class GameManager {
         //GameLogic.IsGameOver(gameBoard,markerLocation);
         return isGameOver;
     }
+
 
    private void exitGame()
    {

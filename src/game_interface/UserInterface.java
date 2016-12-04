@@ -155,6 +155,11 @@ public final class UserInterface {
 
     }
 
+    public static void exitGameFromMainMenu()
+    {
+        System.out.println("bey!!\nO.A 2016 © ");
+    }
+
     public static void PrintWinner(String playerName)
     {
         if (playerName != "TIE") {
