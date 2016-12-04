@@ -36,6 +36,8 @@ public final class UserInterface {
         System.out.println("|        1. Load level      |");
         System.out.println("|        2. Start game      |");
         System.out.println("|        3. Exit game       |");
+        System.out.println("|        ================   |");
+        System.out.println("|        O.A 2016 ©         |");
         System.out.println("============================");
     }
 
@@ -79,17 +81,16 @@ public final class UserInterface {
         }
     }
 
-    public static int GetUserMove(Point markerLocation,eTurn turn,int boardSize) //we need to know if the user need to choose raw or col
+    public static int GetUserMove(Point markerLocation,eTurn turn,int boardSize,String gameBoard) //we need to know if the user need to choose raw or col
     {
         int userMove;
-        Scanner userInputScan = new Scanner(System.in);
         if (turn == eTurn.ROW) {
             System.out.println("Row Player ,please enter number of square in row "+ markerLocation.getRow());
         }
         else if (turn == eTurn.COL){
             System.out.println("Column Player,please enter number of square in col "+ markerLocation.getCol());
         }
-
+        PrintBoard(gameBoard);
         if (userInputScan.hasNextInt()) {
             userMove = userInputScan.nextInt();
         } else {
@@ -100,7 +101,7 @@ public final class UserInterface {
 // If the board input is below 1 or greater than Boardsize, prompt for another value
         while (userMove < 1 || userMove > boardSize)
         {
-            System.out.println("Invalid value! Enter square number (valid values are from 1 to " + boardSize + ")");
+            System.out.println("Invalid value! Enter square number again (valid values are from 1 to " + boardSize + ")");
             if (userInputScan.hasNextInt()) {
                 userMove = userInputScan.nextInt();
             } else {
@@ -108,16 +109,19 @@ public final class UserInterface {
                 userMove = 0;
             }
         }
-        userInputScan.close();
+        //userInputScan.close();
         return userMove;
     }
 
-    public static void ShowStatistics(int totalMoves, double gameTime,int Player1score,int player2Score)
+    public static void ShowStatistics(int totalMoves, double gameTime,int RawPlayerscore,int ColumnPlayerScore)
     {
+        System.out.println("============================");
+        System.out.println("| Game Statistics |");
+        System.out.println("============================");
         System.out.println("Total moves in the game : " + totalMoves);
         System.out.println("Game time : " + gameTime);
-        System.out.println("Player1NAME score : " + Player1score);
-        System.out.println("Player2NAME score : " + player2Score);
+        System.out.println("Raw player score : " + RawPlayerscore);
+        System.out.println("Column player score : " + ColumnPlayerScore);
     }
 
 
@@ -127,7 +131,7 @@ public final class UserInterface {
     public static int GetUserInput(int firstOption,int lastOption)
     {
         int userChoise;
-        String message = String.format("Invalid value! Enter square number (valid options are from %d  to %d)",firstOption,lastOption);
+        String message = String.format("Invalid value! (valid options are from %d  to %d)",firstOption,lastOption);
 
         if (userInputScan.hasNextInt()) {
             userChoise = userInputScan.nextInt();
@@ -138,7 +142,7 @@ public final class UserInterface {
 
         while (userChoise < firstOption || userChoise > lastOption)
         {
-            System.out.println(" " );
+            System.out.println(message);
             if (userInputScan.hasNextInt()) {
                 userChoise = userInputScan.nextInt();
             } else {

@@ -4,17 +4,19 @@ import game_interface.UserInterface;
 import game_objects.*;
 import jaxb.schema.generated.GameDescriptor;
 import jaxb.schema.generated.Players;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.xml.sax.SAXException;
+
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-//import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import org.xml.sax.SAXException;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//import javax.xml.bind.Marshaller;
 
 
 public class GameManager {
@@ -27,6 +29,7 @@ public class GameManager {
     public static final int MAKE_A_MOVE = 2;
     public static final int SHOW_STATISTICS = 3;
     public static final int LEAVE_GAME = 4;
+    public static final int BAD_SQUARE = 100;
 
 
     protected boolean isLoadedGame = false;
@@ -123,8 +126,8 @@ public class GameManager {
     {
         boolean isFilledBoard = false;
 
-        BoardRange range = new BoardRange(-5,10);
-        gameBoard = new Board(9,range,eBoardType.RANDOM);
+        BoardRange range = new BoardRange(1,4);
+        gameBoard = new Board(3,range,eBoardType.RANDOM);
         isFilledBoard = gameBoard.FillRandomBoard();
 
         return isFilledBoard;
@@ -138,7 +141,7 @@ public class GameManager {
         UserInterface.PrintUserMessage("Lets Start the Game ...\n Choose an option from the menu below :");
         //UserInterface.PrintSecondMenu();
         // gameBoard.setMarker(5,5);
-        while (!isGameOver(gameBoard.getMarker().getMarkerLocation())) {
+        while (!isEndOfGame) {
             UserInterface.PrintSecondMenu();
             option = UserInterface.GetUserInput(SHOW_BOARD_AND_CURRENT_PLAYER, LEAVE_GAME);
 
@@ -156,38 +159,56 @@ public class GameManager {
             }
         }
 
-        setEndOfGame();
+        exitGame();
     }
 
     private void makeMove(eTurn playerTurn)
     {
         int chosenSquare;
-        int squareValue;
+        int squareValue = BAD_SQUARE ;
         Point squareLocation = null;
-        switch (currentPlayer.getTurn())
-        {
-            case ROW: chosenSquare=UserInterface.GetUserMove(gameBoard.getMarker().getMarkerLocation(),eTurn.ROW,gameBoard.GetBoardSize());
-                squareLocation = new Point(chosenSquare,gameBoard.getMarker().getMarkerLocation().getCol());
-                break;
+        boolean badInput = true;
 
-            case COL: chosenSquare=UserInterface.GetUserMove(gameBoard.getMarker().getMarkerLocation(),eTurn.COL,gameBoard.GetBoardSize());
-                squareLocation = new Point(gameBoard.getMarker().getMarkerLocation().getRow(),chosenSquare);
-                break;
+        while (badInput) {
+            switch (currentPlayer.getTurn()) {
+                case ROW:
+                    chosenSquare = UserInterface.GetUserMove(gameBoard.getMarker().getMarkerLocation(), eTurn.ROW, gameBoard.GetBoardSize(), gameBoard.toString());
+                    squareLocation = new Point(gameBoard.getMarker().getMarkerLocation().getRow(), chosenSquare);
+                    break;
+
+                case COL:
+                    chosenSquare = UserInterface.GetUserMove(gameBoard.getMarker().getMarkerLocation(), eTurn.COL, gameBoard.GetBoardSize(), gameBoard.toString());
+                    squareLocation = new Point(chosenSquare, gameBoard.getMarker().getMarkerLocation().getCol());
+                    break;
+            }
+
+            squareValue = updateBoard(squareLocation); //update 2 squares
+            if (squareValue != BAD_SQUARE)
+                badInput = false;
+            else
+                UserInterface.PrintUserMessage("You choose invalid square without number value.choose another one..!");
+
         }
-
-        squareValue = updateBoard(squareLocation); //update 2 squares
         updateUserData(squareValue); //update score and moves
-        gameBoard.getMarker().setMarkerLocation(squareLocation);
+        gameBoard.getMarker().setMarkerLocation(squareLocation.getRow(),squareLocation.getCol());
         UserInterface.PrintBoard(gameBoard.toString());
-        UserInterface.PrintSecondMenu();
-        if(currentPlayer.equals(rowPlayer))
-        {
-            currentPlayer = colPlayer;
-        }
-        else
-        {
-            currentPlayer = rowPlayer;
-        }
+            if (currentPlayer.equals(rowPlayer)) {
+                if (gameBoard.isColPlayerHaveMoves(gameBoard.getMarker().getMarkerLocation()))
+                    currentPlayer = colPlayer;
+                else {
+                    isEndOfGame = true;
+                    UserInterface.PrintUserMessage("Col player have no moves ! GAME OVER");
+                }
+            } else //(currentPlayer.equals(colPlayer))
+            {
+                if (gameBoard.isRawPlayerHaveMoves(gameBoard.getMarker().getMarkerLocation()))
+                    currentPlayer = rowPlayer;
+                else {
+                    isEndOfGame = true;
+                    UserInterface.PrintUserMessage("Raw player have no moves ! GAME OVER");
+                }
+            }
+
 
     }
 

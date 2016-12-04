@@ -26,7 +26,7 @@ public class Board {
         boardType = type;
         gameBoard = new Square[size][size];
         boardRange = new BoardRange(range.getFrom(),range.getTo());
-        marker= new Marker(size-1,size-1);
+        marker = new Marker(5,5);
         InitBoard();
     }
 
@@ -138,6 +138,19 @@ public class Board {
 
         gameBoard[boardSize - 1][boardSize - 1].setValue(Marker.markerSign);
         shuffleArray(gameBoard);
+
+            String MarkerSign = marker.getMarkerSign();
+            for(i =0 ;i<boardSize;i++)          //////FOR MARKER CONTROL IN INIT
+            {
+                for(j=0;j<boardSize;j++)
+                    if  (gameBoard[i][j].getValue() == MarkerSign ) {
+                        marker.setMarkerLocation(i + 1, j + 1);
+                        break;
+                    }
+            }
+
+
+
     }
 
         return isValidBoardData;
@@ -151,12 +164,14 @@ public class Board {
 
         for (int i = matrix.length - 1; i > 0; i--) {
             for (int j = matrix[i].length - 1; j > 0; j--) {
-                int m = random.nextInt(i + 1);
-                int n = random.nextInt(j + 1);
+                //if (matrix[i][j].getValue()!= getMarker().getMarkerSign()) {
+                    int m = random.nextInt(i + 1);
+                    int n = random.nextInt(j + 1);
 
-                String temp = matrix[i][j].getValue();
-                matrix[i][j].setValue(matrix[m][n].getValue());
-                matrix[m][n].setValue(temp);
+                    String temp = matrix[i][j].getValue();
+                    matrix[i][j].setValue(matrix[m][n].getValue());
+                    matrix[m][n].setValue(temp);
+
             }
         }
     }
@@ -279,28 +294,54 @@ private void printMatrix()
 
     public int updateBoard(Point squareLocation)
     {
-        Point oldMarkerPoint = marker.getMarkerLocation();                         //empty old marker location
-        gameBoard[oldMarkerPoint.getRow()][oldMarkerPoint.getCol()].setValue("");
+        int squareValue = 100;
+        Point oldMarkerPoint = marker.getMarkerLocation();
 
-        String squareStringValue = gameBoard[squareLocation.getRow()][squareLocation.getCol()].getValue(); //get number
-        int squareValue = Square.ConvertFromStringToIntValue(squareStringValue); //return number value
+        String squareStringValue = gameBoard[squareLocation.getRow()-1][squareLocation.getCol()-1].getValue();//get number
+        if (squareStringValue == marker.getMarkerSign() || squareStringValue == "") { //checks if wrong square-marker or empty
+            return squareValue;
+        }
+            squareValue = Square.ConvertFromStringToIntValue(squareStringValue); //return number value
 
-        gameBoard[squareLocation.getRow()][squareLocation.getCol()].setValue(marker.markerSign); //update marker to square
+        gameBoard[oldMarkerPoint.getRow()-1][oldMarkerPoint.getCol()-1].setValue("");    //empty old marker location
+
+        gameBoard[squareLocation.getRow()-1][squareLocation.getCol()-1].setValue(marker.markerSign); //update marker to square
 
         return squareValue;
     }
 
      public boolean isGameOver(Point markerLocation)
      {
-         int MarkerRow = markerLocation.getRow();
-         int MarkerCol = markerLocation.getCol();
+         int MarkerRow = markerLocation.getRow()-1;
+         int MarkerCol = markerLocation.getCol()-1;
          for (int i=0; i < boardSize; i++)
              if ((gameBoard[MarkerRow][i].isEmpty() == false) && (gameBoard[MarkerRow][i].getValue()!= marker.markerSign))
                  return false;
              for (int i=0; i < boardSize; i++)
-                 if ((gameBoard[i][MarkerCol].isEmpty() == false)&& (gameBoard[MarkerRow][i].getValue()!= marker.markerSign))
+                 if ((gameBoard[i][MarkerCol].isEmpty() == false)&& (gameBoard[i][MarkerCol].getValue()!= marker.markerSign))
                      return false;
          return true;
      }
+
+     public boolean isRawPlayerHaveMoves (Point markerLocation)
+     {
+         int MarkerRow = markerLocation.getRow()-1;
+         for (int i=0; i < boardSize; i++)
+             if ((gameBoard[MarkerRow][i].isEmpty() == false) && (gameBoard[MarkerRow][i].getValue()!= marker.markerSign))
+                 return true;
+         return false;
+     }
+
+
+    public boolean isColPlayerHaveMoves (Point markerLocation)
+    {
+        int MarkerCol = markerLocation.getCol()-1;
+        for (int i=0; i < boardSize; i++)
+            if ((gameBoard[i][MarkerCol].isEmpty() == false)&& (gameBoard[i][MarkerCol].getValue()!= marker.markerSign))
+                return true;
+        return false;
+    }
+
+
 
 }
