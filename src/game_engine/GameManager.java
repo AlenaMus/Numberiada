@@ -46,7 +46,6 @@ public class GameManager {
     private long endTime;
 
 
-
     public GameManager() {
         startGame();
     }
@@ -93,15 +92,20 @@ public class GameManager {
 
    private void setPlayers()
    {
-       rowPlayer = new Player(ePlayerType.HUMAN,"Alona", 1,eTurn.ROW);
        UserInterface.PrintPlayerSubMenu();
-       int playerChoice = UserInterface.GetUserInput(1,2);
+       int playerChoice = UserInterface.GetUserInput(1,3);
        switch (playerChoice)
        {
-           case 1: colPlayer= new Player(ePlayerType.HUMAN,"Or",2,eTurn.COL);
+           case 1:   rowPlayer = new Player(ePlayerType.HUMAN,"Alona", 1,eTurn.ROW);
+                     colPlayer= new Player(ePlayerType.HUMAN,"Or",2,eTurn.COL);
                break;
-           case 2: colPlayer = new Player(ePlayerType.COMPUTER,"Computer",2,eTurn.COL);
+           case 2:   rowPlayer = new Player(ePlayerType.HUMAN,"Alona", 1,eTurn.ROW);
+                     colPlayer = new Player(ePlayerType.COMPUTER,"Computer",2,eTurn.COL);
                break;
+           case 3:   rowPlayer = new Player(ePlayerType.COMPUTER,"Computer 1", 1,eTurn.ROW);
+                     colPlayer = new Player(ePlayerType.COMPUTER,"Computer 2",2,eTurn.COL);
+               break;
+
        }
 
    }
@@ -126,8 +130,8 @@ public class GameManager {
     {
         boolean isFilledBoard = false;
 
-        BoardRange range = new BoardRange(1,4);
-        gameBoard = new Board(3,range,eBoardType.RANDOM);
+        BoardRange range = new BoardRange(1,7);
+        gameBoard = new Board(5,range,eBoardType.RANDOM);
         isFilledBoard = gameBoard.FillRandomBoard();
 
         return isFilledBoard;
@@ -142,24 +146,42 @@ public class GameManager {
         //UserInterface.PrintSecondMenu();
         // gameBoard.setMarker(5,5);
         while (!isEndOfGame) {
-            UserInterface.PrintSecondMenu();
-            option = UserInterface.GetUserInput(SHOW_BOARD_AND_CURRENT_PLAYER, LEAVE_GAME);
+            if (currentPlayer.getPlayerType() == ePlayerType.COMPUTER)
+            {
+                makeMove(currentPlayer.getTurn());
+                switchPlayer();
+            }
+            else { //HUMAN TURN
+                UserInterface.PrintSecondMenu();
+                option = UserInterface.GetUserInput(SHOW_BOARD_AND_CURRENT_PLAYER, LEAVE_GAME);
 
-            switch (option) {
-                case SHOW_BOARD_AND_CURRENT_PLAYER: UserInterface.PrintBoard(gameBoard.toString());
-                                                    UserInterface.PrintCurrentPlayer(currentPlayer.getTurn());
-                                                    break;
-                case MAKE_A_MOVE: makeMove(currentPlayer.getTurn());
-                                    break;
-                case SHOW_STATISTICS:UserInterface.ShowStatistics(rowPlayer.getNumOfMoves()+colPlayer.getNumOfMoves(),TotalGameTime(),rowPlayer.getScore(),colPlayer.getScore());
-                                     break;
-                case LEAVE_GAME: exitGame();
-                                 break;
+                switch (option) {
+                    case SHOW_BOARD_AND_CURRENT_PLAYER:
+                        UserInterface.PrintBoard(gameBoard.toString());
+                        UserInterface.PrintCurrentPlayer(currentPlayer.getTurn());
+                        break;
+                    case MAKE_A_MOVE:
+                        makeMove(currentPlayer.getTurn());
+                        switchPlayer();
+                        break;
+                    case SHOW_STATISTICS:
+                        UserInterface.ShowStatistics(rowPlayer.getNumOfMoves() + colPlayer.getNumOfMoves(), TotalGameTime(), rowPlayer.getScore(), colPlayer.getScore());
+                        break;
+                    case LEAVE_GAME:
+                        exitGame();
+                        break;
 
+                }
             }
         }
 
         exitGame();
+    }
+
+    private int makeComputerMove()
+    {
+        int chosenSquare = GameLogic.ComputerMove(gameBoard.GetBoardSize());
+        return chosenSquare;
     }
 
     private void makeMove(eTurn playerTurn)
@@ -172,45 +194,68 @@ public class GameManager {
         while (badInput) {
             switch (currentPlayer.getTurn()) {
                 case ROW:
-                    chosenSquare = UserInterface.GetUserMove(gameBoard.getMarker().getMarkerLocation(), eTurn.ROW, gameBoard.GetBoardSize(), gameBoard.toString());
-                    squareLocation = new Point(gameBoard.getMarker().getMarkerLocation().getRow(), chosenSquare);
-                    break;
-
+                    if (rowPlayer.getPlayerType() == ePlayerType.HUMAN) {
+                        chosenSquare = UserInterface.GetUserMove(gameBoard.getMarker().getMarkerLocation(), eTurn.ROW, gameBoard.GetBoardSize(), gameBoard.toString());
+                        squareLocation = new Point(gameBoard.getMarker().getMarkerLocation().getRow(), chosenSquare);
+                        break;
+                    }
+                    else // COMPUTER
+                    {
+                        chosenSquare = makeComputerMove();
+                        squareLocation = new Point(gameBoard.getMarker().getMarkerLocation().getRow(), chosenSquare);
+                        break;
+                    }
                 case COL:
-                    chosenSquare = UserInterface.GetUserMove(gameBoard.getMarker().getMarkerLocation(), eTurn.COL, gameBoard.GetBoardSize(), gameBoard.toString());
-                    squareLocation = new Point(chosenSquare, gameBoard.getMarker().getMarkerLocation().getCol());
-                    break;
+                    if (colPlayer.getPlayerType() == ePlayerType.HUMAN) {
+                        chosenSquare = UserInterface.GetUserMove(gameBoard.getMarker().getMarkerLocation(), eTurn.COL, gameBoard.GetBoardSize(), gameBoard.toString());
+                        squareLocation = new Point(chosenSquare, gameBoard.getMarker().getMarkerLocation().getCol());
+                        break;
+                    }
+                    else // COMPUTER
+                    {
+                        chosenSquare = makeComputerMove();
+                        squareLocation = new Point(chosenSquare, gameBoard.getMarker().getMarkerLocation().getCol());
+                        break;
+                    }
             }
 
             squareValue = updateBoard(squareLocation); //update 2 squares
             if (squareValue != BAD_SQUARE)
                 badInput = false;
             else
-                UserInterface.PrintUserMessage("You choose invalid square! you can't select empty squares/marker square.choose another one..!");
+                if (currentPlayer.getPlayerType() == ePlayerType.HUMAN)
+                    UserInterface.PrintUserMessage("You choose invalid square! you can't select empty squares/marker square.choose another one..!");
 
+        }
+        if (currentPlayer.getPlayerType() == ePlayerType.COMPUTER)
+        {
+            UserInterface.PrintUserMessage("computer play his turn...");
         }
         updateUserData(squareValue); //update score and moves
         gameBoard.getMarker().setMarkerLocation(squareLocation.getRow(),squareLocation.getCol());
         UserInterface.PrintBoard(gameBoard.toString());
-            if (currentPlayer.equals(rowPlayer)) {
-                if (gameBoard.isColPlayerHaveMoves(gameBoard.getMarker().getMarkerLocation()))
-                    currentPlayer = colPlayer;
-                else {
-                    isEndOfGame = true;
-                    UserInterface.PrintUserMessage("Col player have no moves ! GAME OVER");
-                }
-            } else //(currentPlayer.equals(colPlayer))
-            {
-                if (gameBoard.isRawPlayerHaveMoves(gameBoard.getMarker().getMarkerLocation()))
-                    currentPlayer = rowPlayer;
-                else {
-                    isEndOfGame = true;
-                    UserInterface.PrintUserMessage("Raw player have no moves ! GAME OVER");
-                }
-            }
-
-
     }
+
+    private void switchPlayer()
+    {
+        if (currentPlayer.equals(rowPlayer)) {
+            if (gameBoard.isColPlayerHaveMoves(gameBoard.getMarker().getMarkerLocation()))
+                currentPlayer = colPlayer;
+            else {
+                isEndOfGame = true;
+                UserInterface.PrintUserMessage("Col player have no moves ! GAME OVER");
+            }
+        } else //(currentPlayer.equals(colPlayer))
+        {
+            if (gameBoard.isRawPlayerHaveMoves(gameBoard.getMarker().getMarkerLocation()))
+                currentPlayer = rowPlayer;
+            else {
+                isEndOfGame = true;
+                UserInterface.PrintUserMessage("Raw player have no moves ! GAME OVER");
+            }
+        }
+    }
+
 
 
     private int updateBoard(Point squareLocation) //implement in Board - returns updated value of row/column

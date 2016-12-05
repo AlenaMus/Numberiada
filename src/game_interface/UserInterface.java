@@ -48,6 +48,7 @@ public final class UserInterface {
         System.out.println("=====================");
         System.out.println("| 1. Human Player    |");
         System.out.println("| 2. Computer Player |");
+        System.out.println("| 3. 2 Computer Players (automatic game) |");
         System.out.println("=====================");
 
     }
