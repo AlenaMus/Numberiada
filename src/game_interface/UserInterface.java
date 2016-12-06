@@ -158,7 +158,7 @@ public final class UserInterface {
 
     public static void exitGameFromMainMenu()
     {
-        System.out.println("bey!!\nO.A 2016 © ");
+        System.out.println("bye bye!!\nO.A 2016 © ");
     }
 
     public static void PrintWinner(String playerName)
@@ -182,31 +182,44 @@ public final class UserInterface {
     }
 
 
-    public static String getFileName()
-    {
-        String fileName = " ";
-        String filePath=" ";
-        String fullFileName = " ";
-        boolean isValidFolder = false;
 
-        while (!isValidFolder)
-        {
-            PrintUserMessage("Please enter the path of the folder");
+    public static String getXMLfile()
+    {
+        String filePath = " ";
+        boolean isValidFile = false;
+
+        while (!isValidFile) {
+            PrintUserMessage("Please enter the path of the file");
             filePath = getString();
             File f = new File(filePath);
-            if (f.exists() && f.isDirectory())
-                isValidFolder = true;
-            else
-               PrintUserMessage("Invalid folder, please re-enter the folder path");
+            if(f.exists() && !f.isDirectory()) {
+                isValidFile = true;
+            } else {
+                PrintUserMessage("File doesn't exist, please re-enter the folder path");
+            }
+
         }
-
-        PrintUserMessage("Please enter file name");
-        fileName = getString();
-
-        fullFileName = filePath + "\\" + fileName;
-        return fullFileName;
-
+        return filePath;
     }
+
+//        while (!isValidFolder)
+//        {
+//            PrintUserMessage("Please enter the path of the folder");
+//            filePath = getString();
+//            File f = new File(filePath);
+//            if (f.exists() && f.isDirectory())
+//                isValidFolder = true;
+//            else
+//               PrintUserMessage("Invalid folder, please re-enter the folder path");
+//        }
+//
+//        PrintUserMessage("Please enter file name");
+//        fileName = getString();
+//
+//        fullFileName = filePath + "\\" + fileName;
+//        return fullFileName;
+//
+//    }
 
     public static String getString()
     {

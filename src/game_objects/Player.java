@@ -25,11 +25,14 @@ public class Player {
 
     }
 
-    public Player(eTurn turn)
+    public Player(eTurn turn,ePlayerType playerType)
     {
         this.turn = turn;
+        this.playerType = playerType;
         score = 0;
         numOfMoves = 0;
+        name = "";
+
     }
 
     public int getId() {

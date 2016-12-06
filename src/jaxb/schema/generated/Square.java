@@ -148,4 +148,26 @@ public class Square {
         this.color = value;
     }
 
+    @Override
+    public boolean equals(Object square)
+    {
+        boolean isEqual = false;
+        if(square != null) {
+            if (square instanceof Square) {
+                Square square1 = (Square) square;
+                if (this.getColumn() == square1.getColumn() && this.getRow() == square1.getRow()) {
+                    isEqual = true;
+                }
+            }
+        }
+
+        return isEqual;
+    }
+
+    @Override
+    public int hashCode() {
+      return super.hashCode();
+
+
+    }
 }

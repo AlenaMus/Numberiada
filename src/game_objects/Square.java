@@ -95,7 +95,27 @@ public class Square {
     }
 
 
+    @Override
+    public boolean equals(Object square)
+    {
+        boolean isEqual = false;
+        if(square != null) {
+            if (square instanceof Square) {
+                  Square square1 = (Square) square;
+                if (this.getLocation().getCol() == square1.getLocation().getCol() && this.getLocation().getRow() == square1.getLocation().getRow()) {
+                    isEqual = true;
+                }
+            }
+        }
 
+        return isEqual;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+
+    }
 
 
 

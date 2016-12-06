@@ -6,5 +6,6 @@ package game_engine;
 public enum eGameType {
     BASIC,
     ADVANCED,
-    ADVANCED_DYNAMIC
+    ADVANCED_DYNAMIC;
+
 }

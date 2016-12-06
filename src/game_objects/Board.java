@@ -4,6 +4,8 @@
 package game_objects;
 import game_interface.UserInterface;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Board {
@@ -62,8 +64,15 @@ public class Board {
     }
 
 
-    public void FillExplicitBoard()
+
+
+    public void FillExplicitBoard(List<Square> xmlBoardList,Point markerLocation)
     {
+        for(Square square:xmlBoardList)
+        {
+
+        }
+
 
     }
 
