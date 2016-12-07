@@ -13,13 +13,15 @@ public class Player {
     protected eTurn turn;
     protected int score;
     protected int numOfMoves;
+    private int color;
 
-    public Player(ePlayerType playerType,String playerName, int playerId, eTurn playerTurn)
+    public Player(ePlayerType playerType,String playerName, int playerId,int color)
     {
         this.name = playerName;
         this.id = playerId;
         this.playerType = playerType;
-        this.turn = playerTurn;
+        //this.turn = playerTurn;
+        this.color =color;
         score = 0;
         numOfMoves = 0;
 
@@ -83,9 +85,42 @@ public class Player {
         this.name = name;
     }
 
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 
+    @Override
+    public boolean equals(Object player) {
+        boolean isEqual = false;
+        Player newPlayer;
 
+        if(player instanceof Player)
+        {
+            newPlayer = (Player)player;
+            if(newPlayer.getName() == this.name || newPlayer.getId() == this.id || newPlayer.color == this.color)
+            {
+                isEqual = true;
+            }
 
+        }
 
+        return isEqual;
+    }
 
+    public boolean checkPlayerTurn(Player currentPlayer) //only for basic game use //
+    {
+       boolean isCurrentPlayer = false;
+
+        if(currentPlayer != null)
+        {
+            if(this.turn == currentPlayer.turn)
+            {
+                isCurrentPlayer = true;
+            }
+        }
+
+        return isCurrentPlayer;
+
+    }
 }

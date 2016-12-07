@@ -29,6 +29,11 @@ public class GameManager {
     public static final int START_GAME = 2;
     public static final int EXIT_GAME = 3;
 
+    public static final int HUMAN_PLAYER = 1;
+    public static final int COMPUTER_PLAYER =2;
+    public static final int COMPUTERS_GAME =3;
+
+
     public static final int SHOW_BOARD_AND_CURRENT_PLAYER = 1;
     public static final int MAKE_A_MOVE = 2;
     public static final int SHOW_STATISTICS = 3;
@@ -45,36 +50,33 @@ public class GameManager {
     protected Board gameBoard;
     private Player rowPlayer;
     private Player colPlayer;
-    private double totalTime;
-    private final long StartTime = System.currentTimeMillis();
-    private long endTime;
+    private GameLogic gameLogic;
 
     List<game_objects.Square> newList = new ArrayList<Square>();
 
-    public GameManager() {
-        startGame();
+    public GameManager()
+    {
+        gameLogic = new GameLogic();
+        runGame();
+       // startGame();
     }
 
-    public long TotalGameTime()
-    {
-       long gameTime = System.currentTimeMillis() - StartTime;
-        this.totalTime = gameTime / 1000.0;
-        return gameTime;
-    }
+
 
     public void startGame() {
         UserInterface.PrintFirstMenu();
         int userChoise = UserInterface.GetUserInput(1, 3);
         switch (userChoise) {
             case LOAD_GAME:
-                //LoadGameFromXmlAndValidate();
+                LoadGameFromXmlAndValidate();
                 isLoadedGame = true;
+              //  UserInterface.PrintBoard(gameBoard.toString());
                 break;
             case START_GAME:
-                if (!isLoadedGame) /*****Change it */
+                if (isLoadedGame)
                     initGame();
                 else
-                    UserInterface.PrintUserMessage("Cannot start game. You need to load game file first!");
+                    UserInterface.PrintUserMessage("Cannot start game. You need to load game XML file first!");
                 break;
             case EXIT_GAME:
                 UserInterface.exitGameFromMainMenu();
@@ -83,46 +85,43 @@ public class GameManager {
 
     }
 
-    private void setEndOfGame()
+    private void runGame()
     {
-        if(isEndOfGame)
+        isLoadedGame = false;
+        UserInterface.PrintFirstMenu();
+        int userChoise = UserInterface.GetUserInput(1, 3);
+
+        while(userChoise != EXIT_GAME)
         {
-            this.endTime = System.currentTimeMillis();
+            if(userChoise == LOAD_GAME)
+            {
+                LoadGameFromXmlAndValidate();
+                isLoadedGame = true;
+            }
+            else if(userChoise == START_GAME)
+            {
+                if(isLoadedGame)
+                {
+                    initGame();
+                }
+                else
+                {
+                    UserInterface.PrintUserMessage("Cannot start game. You need to load game XML file first!");
+
+                }
+            }
+
+            UserInterface.PrintFirstMenu();
+            userChoise = UserInterface.GetUserInput(1, 3);
         }
 
-
-    }
-
-    private void setBasicPlayers() /**Change to Basic - create 2 Players ROW -COL */
-    {
-        rowPlayer = new Player(ePlayerType.HUMAN,"Alona", 1,eTurn.ROW);
-        UserInterface.PrintPlayerSubMenu();
-        int playerChoice = UserInterface.GetUserInput(1,2);
-        switch (playerChoice)
-        {
-            case 1: colPlayer= new Player(ePlayerType.HUMAN,"Or",2,eTurn.COL);
-                break;
-            case 2: colPlayer = new Player(ePlayerType.COMPUTER,"Computer",2,eTurn.COL);
-                break;
-        }
-
-    }
-
-    private void setPlayers(Players players)
-    {
-
-
-    }
-
-    private void setDynamicPlayers(DynamicPlayers dynamicPlayers)
-    {
-
+            UserInterface.exitGameFromMainMenu();
     }
 
 
     private void initGame()
     {
-
+        setBasicPlayers();
         gameLoop();
     }
 
@@ -134,8 +133,6 @@ public class GameManager {
 
         currentPlayer = rowPlayer;
         UserInterface.PrintUserMessage("Lets Start the Game ...\n Choose an option from the menu below :");
-        //UserInterface.PrintSecondMenu();
-        // gameBoard.setMarker(5,5);
         while (!isEndOfGame) {
             if (currentPlayer.getPlayerType() == ePlayerType.COMPUTER)
             {
@@ -156,7 +153,7 @@ public class GameManager {
                         switchPlayer();
                         break;
                     case SHOW_STATISTICS:
-                        UserInterface.ShowStatistics(rowPlayer.getNumOfMoves() + colPlayer.getNumOfMoves(), TotalGameTime(), rowPlayer.getScore(), colPlayer.getScore());
+                        UserInterface.ShowStatistics(rowPlayer.getNumOfMoves() + colPlayer.getNumOfMoves(), gameLogic.TotalGameTime(), rowPlayer.getScore(), colPlayer.getScore());
                         break;
                     case LEAVE_GAME:
                         exitGame();
@@ -229,20 +226,22 @@ public class GameManager {
 
     private void switchPlayer()
     {
-        if (currentPlayer.equals(rowPlayer)) {
+        if (currentPlayer.checkPlayerTurn(rowPlayer)) {
             if (gameBoard.isColPlayerHaveMoves(gameBoard.getMarker().getMarkerLocation()))
+            {
                 currentPlayer = colPlayer;
+            }
             else {
                 isEndOfGame = true;
                 UserInterface.PrintUserMessage("Col player have no moves ! GAME OVER");
             }
         } else //(currentPlayer.equals(colPlayer))
         {
-            if (gameBoard.isRawPlayerHaveMoves(gameBoard.getMarker().getMarkerLocation()))
+            if (gameBoard.isRowPlayerHaveMoves(gameBoard.getMarker().getMarkerLocation()))
                 currentPlayer = rowPlayer;
             else {
                 isEndOfGame = true;
-                UserInterface.PrintUserMessage("Raw player have no moves ! GAME OVER");
+                UserInterface.PrintUserMessage("Row player have no moves ! GAME OVER");
             }
         }
     }
@@ -262,13 +261,6 @@ public class GameManager {
         currentPlayer.setScore(currentPlayer.getScore() + squareValue);
     }
 
-    private boolean isGameOver(Point markerLocation)
-    {
-        boolean isGameOver = false;
-        isGameOver = gameBoard.isGameOver(markerLocation);
-        //GameLogic.IsGameOver(gameBoard,markerLocation);
-        return isGameOver;
-    }
 
 
    private void exitGame()
@@ -283,7 +275,7 @@ public class GameManager {
            UserInterface.PrintWinner("TIE");
 
        UserInterface.PrintBoard(gameBoard.toString());
-       UserInterface.ShowStatistics(rowPlayer.getNumOfMoves()+colPlayer.getNumOfMoves(),TotalGameTime(),rowPlayer.getScore(),colPlayer.getScore());
+       UserInterface.ShowStatistics(rowPlayer.getNumOfMoves()+colPlayer.getNumOfMoves(),gameLogic.TotalGameTime(),rowPlayer.getScore(),colPlayer.getScore());
 
        //startGame();//go back to start game here
    }
@@ -291,26 +283,103 @@ public class GameManager {
 
     private void setBoard(jaxb.schema.generated.Board board)
     {
-        BoardRange range = new BoardRange(board.getStructure().getRange().getFrom(),board.getStructure().getRange().getTo());
-        eBoardType boardType = eBoardType.valueOf(board.getStructure().getType());
 
-        gameBoard = new Board(board.getSize().intValue(),range,boardType);
+        eBoardType boardType = eBoardType.valueOf(board.getStructure().getType());
+        gameBoard = new Board(board.getSize().intValue(),boardType);
 
         switch (boardType) {
-            case EXPLICIT:Point markerLocation = new Point(board.getStructure().getSquares().getMarker().getRow().intValue(),board.getStructure().getSquares().getMarker().getColumn().intValue());
-                gameBoard.FillExplicitBoard(newList,markerLocation);
-                break;
-            case RANDOM: gameBoard.FillRandomBoard();
-                break;
+            case Explicit: Point markerLocation = new Point(board.getStructure().getSquares().getMarker().getRow().intValue(),board.getStructure().getSquares().getMarker().getColumn().intValue());
+                          gameBoard.FillExplicitBoard(newList,markerLocation);
+                          break;
+            case Random:
+                        BoardRange range = new BoardRange(board.getStructure().getRange().getFrom(),board.getStructure().getRange().getTo());
+                        gameBoard.setBoardRange(range);
+                        gameBoard.FillRandomBoard();
+                         break;
         }
     }
+
+
+    private void setBasicPlayers()
+    {
+
+        UserInterface.PrintPlayerSubMenu();
+        int playerChoice = UserInterface.GetUserInput(1,3);
+        switch (playerChoice)
+        {
+            case HUMAN_PLAYER:
+                rowPlayer = new Player(eTurn.ROW,ePlayerType.HUMAN);
+                colPlayer = new Player(eTurn.COL,ePlayerType.HUMAN);
+                 break;
+            case COMPUTER_PLAYER:
+                rowPlayer = new Player(eTurn.ROW,ePlayerType.HUMAN);
+                colPlayer = new Player(eTurn.COL,ePlayerType.COMPUTER);
+                break;
+            case COMPUTERS_GAME:
+                rowPlayer = new Player(eTurn.ROW,ePlayerType.COMPUTER);
+                colPlayer = new Player(eTurn.COL,ePlayerType.COMPUTER);
+                break;
+        }
+
+
+    }
+
+
+    private boolean checkAndSetPlayersXML(jaxb.schema.generated.Players players) //advanced game
+    {
+        boolean areValidPlayers = true;
+        List<jaxb.schema.generated.Player> gamePlayers = players.getPlayer();
+        Player newPlayer ;
+
+        if(gamePlayers.size() < gameLogic.MIN_PLAYERS || gamePlayers.size() > gameLogic.MAX_PLAYERS)
+        {
+            areValidPlayers = false;
+            UserInterface.ValidationErrors.add(String.format("Players Validation Error : %d - invalid numbers of players ," +
+                                                              "number of players must be minimun 2 and maximum 6 !",gamePlayers.size()));
+        }
+        else
+        {
+            gameLogic.setNumOfPlayers(gamePlayers.size());
+            for(jaxb.schema.generated.Player player :gamePlayers)
+            {
+                newPlayer = new Player(ePlayerType.valueOf(player.getType()),player.getName(),player.getId().intValue(),player.getColor());
+                if(gameLogic.getPlayers().contains(newPlayer))
+                {
+                    areValidPlayers =false;
+                    UserInterface.ValidationErrors.add(String.format("Player Validation Error: name = %s ,id = %d, color = %s already exists !",player.getName(),player.getId(),player.getColor()));
+                    gameLogic.getPlayers().clear();
+                    break;
+                }
+                else
+                    {
+                       gameLogic.getPlayers().add(newPlayer);
+                   }
+            }
+        }
+
+        return areValidPlayers;
+    }
+
+//    private boolean checkAdvanceDynamicXML(jaxb.schema.generated.DynamicPlayers dynamicPlayers) //dynamic advanced game
+//    {
+//        boolean areValidPlayers = true;
+//
+//        return areValidPlayers;
+//
+//    }
+//
+//    private void setDynamicPlayers(DynamicPlayers dynamicPlayers) //dynamic advanced game
+//    {
+//
+//    }
+
 
 
 
     public void LoadGameFromXmlAndValidate() {
         boolean  isValidXML = false;
         String filePath = "";
-        File gameFile;
+       // File gameFile;
         GameDescriptor loadedGame = null;
         newList.clear();
 
@@ -324,10 +393,10 @@ public class GameManager {
                 UserInterface.PrintError("Invalid XML File, please load valid xml file !\n ");
                 UserInterface.PrintValidationErrors();
             }
-
         }
 
-        loadDataFromJaxbToGame(loadedGame);
+        loadDataFromJaxbToGame(loadedGame); //setBoard in Basic
+        UserInterface.PrintUserMessage("The XML Game file Loaded Successfully");
     }
 
 
@@ -337,81 +406,64 @@ public class GameManager {
         boolean isValidXMLData = true;
 
         String gameType = loadedGame.getGameType();
-        switch (eGameType.valueOf(gameType)) // checking game type in XML
-        {
-            case BASIC:
-                isValidXMLData = checkBasicXML(loadedGame);
-                break;
-            // case ADVANCED:  isValidXMLData = checkAdvancedXML(loadedGame);
-            //   break;
-            // case ADVANCED_DYNAMIC: isValidXMLData = checkAdvanceDynamicXML(loadedGame);
-            //    break;
-            default:
-                isValidXMLData = false;
-                UserInterface.ValidationErrors.add(String.format("Game type Error : No such game type %s !", gameType));
+        isValidXMLData = checkBoardXML(loadedGame);
 
+        if(isValidXMLData && (eGameType.valueOf(gameType) != eGameType.Basic) ) {
+            if (eGameType.valueOf(gameType) == eGameType.Advance) {
+                isValidXMLData = checkAndSetPlayersXML(loadedGame.getPlayers());
+            }
+            else if(eGameType.valueOf(gameType) == eGameType.AdvanceDynamic) {
+                 // isValidXMLData = checkAdvanceDynamicXML(loadedGame.getDynamicPlayers());
+            }
+            else {
+                isValidXMLData = false;
+                UserInterface.ValidationErrors.add(String.format("Game Type Error : No such game type %s !", gameType));
+            }
         }
         return isValidXMLData;
     }
 
-    private boolean checkBasicXML(GameDescriptor loadedGame) ///write errors if invalid state is recognized
+
+    private boolean checkBoardXML(GameDescriptor loadedGame)
     {
-        boolean isValidXML;
+        boolean isValidBoard;
         int size;
         eBoardType boardType;
-
+        List<jaxb.schema.generated.Square> squares;
 
         jaxb.schema.generated.Board gameBoard = loadedGame.getBoard();
         jaxb.schema.generated.Structure structure = gameBoard.getStructure();
-        List<jaxb.schema.generated.Square> squares = structure.getSquares().getSquare();
 
-
-        //  if(gameBoard != null)
-        //  {
         size = gameBoard.getSize().intValue();
         if(size > 0)
         {
-
             boardType = eBoardType.valueOf(structure.getType());
 
-            if(boardType.equals(eBoardType.EXPLICIT))
+            if(boardType.equals(eBoardType.Explicit))
             {
-                isValidXML = checkExplicitBoard(structure.getRange(),squares,structure.getSquares().getMarker(),size);
+                 squares = structure.getSquares().getSquare();
+                 isValidBoard = checkExplicitBoard(structure.getRange(),squares,structure.getSquares().getMarker(),size);
             }
             else
             {
-                if(boardType.equals(eBoardType.RANDOM))
+                if(boardType.equals(eBoardType.Random))
                 {
-                    if(squares.size() == 0) //must not be given explicit board
-                    {
-                        isValidXML = checkRandomBoard(structure.getRange()); //board range check
-                    }
-                    else
-                    {
-                        isValidXML = false;
-                        UserInterface.ValidationErrors.add("Random Board validation error : the board list squares must be null!");
-                    }
+                    isValidBoard = checkRandomBoard(structure.getRange()); //board range check
                 }
                 else
                 {
-                    isValidXML = false;
+                    isValidBoard = false;
                     UserInterface.ValidationErrors.add(String.format("Board type validation error : %s doesn't exist!",boardType));
                 }
             }
         }
         else
         {
-            isValidXML = false;
+            isValidBoard = false;
             UserInterface.ValidationErrors.add(String.format("Board size validation error : %d must be positive!",size));
         }
-//        }
-//        else
-//        {
-//            isValidXML = false;
-//            UserInterface.ValidationErrors.add("Board Validation error : Board object cannot be null !");
-//        }
 
-        return isValidXML;
+        return isValidBoard;
     }
 
 
@@ -419,7 +471,7 @@ public class GameManager {
     {
         boolean isValidBoard = true;
         game_objects.Square newSquare;
-        int row,col,val;
+        int row,col,val,color;
 
         if(!isInBoardRange(marker.getRow().intValue(),boardSize))
         {
@@ -437,10 +489,11 @@ public class GameManager {
             row = square.getRow().intValue();
             col = square.getColumn().intValue();
             val = square.getValue().intValue();
+            color = square.getColor();
 
             if(isInBoardRange(row,boardSize) && isInBoardRange(col,boardSize)) //location is ok
             {
-                newSquare = new game_objects.Square(new Point(row,col),String.valueOf(val));
+                newSquare = new game_objects.Square(new Point(row,col),String.valueOf(val),color);
                 if(newList.contains(newSquare))
                 {
                     isValidBoard = false;
@@ -470,7 +523,6 @@ public class GameManager {
 
     }
 
-
     private boolean isInBoardRange(int num, int size)
     {
         boolean isValid = true;
@@ -483,23 +535,22 @@ public class GameManager {
     }
     private void loadDataFromJaxbToGame(GameDescriptor loadedGame)
     {
-
-        String gameType = loadedGame.getGameType();
+       // String gameType = loadedGame.getGameType();
         jaxb.schema.generated.Board loadedBoard = loadedGame.getBoard();
         setBoard(loadedBoard);
 
-        switch (eGameType.valueOf(gameType))
-        {
-            case BASIC: setBasicPlayers();
-                break;
-            case ADVANCED: Players players = loadedGame.getPlayers();
-                setPlayers(players);
-                break;
-            case ADVANCED_DYNAMIC: DynamicPlayers dynamicPlayers = loadedGame.getDynamicPlayers();
-                setDynamicPlayers(dynamicPlayers);
-                break;
-        }
 
+       // switch (eGameType.valueOf(gameType))
+       // {
+           // case Basic: setBasicPlayers();
+                     //    break;
+//            case Advance: Players players = loadedGame.getPlayers();
+//                            setPlayers(players);
+//                             break;
+           // case AdvanceDynamic: DynamicPlayers dynamicPlayers = loadedGame.getDynamicPlayers();
+                                    // setDynamicPlayers(dynamicPlayers);
+                                 //    break;
+      //  }
 
     }
 

@@ -18,17 +18,19 @@ public class Board {
     private Square[][] gameBoard;
     private BoardRange boardRange;
     private Marker marker;
+    private int maxDigitsNum=0;
 
 
 
     public Board(Board gameBoard){}
-    public Board(int size, BoardRange range, eBoardType type)
+
+    public Board(int size, eBoardType type)
     {
         boardSize = size;
         boardType = type;
         gameBoard = new Square[size][size];
-        boardRange = new BoardRange(range.getFrom(),range.getTo());
-        marker = new Marker(5,5);
+        marker = new Marker(0,0);
+       // boardRange = null;
         InitBoard();
     }
 
@@ -39,6 +41,10 @@ public class Board {
     public eBoardType GetBoardType(){return boardType;}
     public void SetBoardType(eBoardType type){boardType = type; }
 
+    public void setBoardRange(BoardRange range)
+    {
+        boardRange = new BoardRange(range.getFrom(),range.getTo());
+    }
 
     public Marker getMarker() {
         return marker;
@@ -68,11 +74,26 @@ public class Board {
 
     public void FillExplicitBoard(List<Square> xmlBoardList,Point markerLocation)
     {
+        int col ,row,color;
+        String val;
+
         for(Square square:xmlBoardList)
         {
+            col = square.getLocation().getCol();
+            row = square.getLocation().getRow();
+            val = square.getValue();
+            color = square.getColor();
+            if(val.length() > maxDigitsNum)
+            {
+                maxDigitsNum = val.length();
+            }
 
+            gameBoard[row-1][col-1].setColor(color);
+            gameBoard[row-1][col-1].setValue(val);
         }
 
+        marker.setMarkerLocation(markerLocation.getRow()-1,markerLocation.getCol()-1);
+        gameBoard[markerLocation.getRow()-1][markerLocation.getCol()-1].setValue(marker.getMarkerSign());
 
     }
 
@@ -125,6 +146,7 @@ public class Board {
             for(int m = 0;m < rangeSize && i< boardSize;m++) {
                 for (int k = 0; k < printNumCount && i< boardSize; k++) {
                     gameBoard[i][j].setValue(Square.ConvertFromIntToStringValue(rangeNumToPrint));
+                    gameBoard[i][j].setColor(0);
                     j++;
                     if (j == boardSize) {
                         i++;
@@ -142,6 +164,7 @@ public class Board {
         for (int m = i; m < boardSize; m++) {
             for (int n = j; n < boardSize; n++) {
                 gameBoard[m][n].setValue("");
+                gameBoard[i][j].setColor(0);
             }
         }
 
@@ -152,16 +175,12 @@ public class Board {
             for(i =0 ;i<boardSize;i++)          //////FOR MARKER CONTROL IN INIT
             {
                 for(j=0;j<boardSize;j++)
-                    if  (gameBoard[i][j].getValue() == MarkerSign ) {
-                        marker.setMarkerLocation(i + 1, j + 1);
+                    if  (gameBoard[i][j].getValue().equals( MarkerSign)) {
+                          marker.setMarkerLocation(i + 1, j + 1);
                         break;
                     }
             }
-
-
-
     }
-
         return isValidBoardData;
     }
 
@@ -242,10 +261,18 @@ private void printMatrix()
     private int sellSize()
     {
         int size =0;
-        if(boardRange.getTo()<0 || boardRange.getFrom()<0){
-            size++;
+        if(boardType.equals(eBoardType.Random))
+        {
+            if(boardRange.getTo()<0 || boardRange.getFrom()<0){
+                size++;
+            }
+            size+= digits(Math.max(Math.abs(boardRange.getFrom()),Math.abs(boardRange.getTo())));
         }
-        size+= digits(Math.max(Math.abs(boardRange.getFrom()),Math.abs(boardRange.getTo())));
+        else if(boardType.equals(eBoardType.Explicit))
+        {
+            size = maxDigitsNum;
+        }
+
         return size;
     }
 
@@ -307,7 +334,7 @@ private void printMatrix()
         Point oldMarkerPoint = marker.getMarkerLocation();
 
         String squareStringValue = gameBoard[squareLocation.getRow()-1][squareLocation.getCol()-1].getValue();//get number
-        if (squareStringValue == marker.getMarkerSign() || squareStringValue == "") { //checks if wrong square-marker or empty
+        if (squareStringValue.equals(marker.getMarkerSign()) || squareStringValue.isEmpty()) { //checks if wrong square-marker or empty
             return squareValue;
         }
             squareValue = Square.ConvertFromStringToIntValue(squareStringValue); //return number value
@@ -324,19 +351,19 @@ private void printMatrix()
          int MarkerRow = markerLocation.getRow()-1;
          int MarkerCol = markerLocation.getCol()-1;
          for (int i=0; i < boardSize; i++)
-             if ((gameBoard[MarkerRow][i].isEmpty() == false) && (gameBoard[MarkerRow][i].getValue()!= marker.markerSign))
+             if ((!gameBoard[MarkerRow][i].isEmpty()) && (!gameBoard[MarkerRow][i].getValue().equals(marker.getMarkerSign())))
                  return false;
              for (int i=0; i < boardSize; i++)
-                 if ((gameBoard[i][MarkerCol].isEmpty() == false)&& (gameBoard[i][MarkerCol].getValue()!= marker.markerSign))
+                 if ((!gameBoard[i][MarkerCol].isEmpty() )&& (!gameBoard[i][MarkerCol].getValue().equals(marker.getMarkerSign())))
                      return false;
          return true;
      }
 
-     public boolean isRawPlayerHaveMoves (Point markerLocation)
+     public boolean isRowPlayerHaveMoves(Point markerLocation)
      {
          int MarkerRow = markerLocation.getRow()-1;
          for (int i=0; i < boardSize; i++)
-             if ((gameBoard[MarkerRow][i].isEmpty() == false) && (gameBoard[MarkerRow][i].getValue()!= marker.markerSign))
+             if ((!gameBoard[MarkerRow][i].isEmpty()) && (!gameBoard[MarkerRow][i].getValue().equals(marker.getMarkerSign())))
                  return true;
          return false;
      }
@@ -346,7 +373,7 @@ private void printMatrix()
     {
         int MarkerCol = markerLocation.getCol()-1;
         for (int i=0; i < boardSize; i++)
-            if ((gameBoard[i][MarkerCol].isEmpty() == false)&& (gameBoard[i][MarkerCol].getValue()!= marker.markerSign))
+            if ((!gameBoard[i][MarkerCol].isEmpty())&& (!gameBoard[i][MarkerCol].getValue().equals(marker.getMarkerSign())))
                 return true;
         return false;
     }

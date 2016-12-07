@@ -44,11 +44,11 @@ public final class UserInterface {
     public static void PrintPlayerSubMenu()
     {
 
-        System.out.println("Choose your partner :");
+        System.out.println("Choose your game partner :");
         System.out.println("=====================");
         System.out.println("| 1. Human Player    |");
         System.out.println("| 2. Computer Player |");
-        System.out.println("| 3. 2 Computer Players (automatic game) |");
+        System.out.println("| 3. Both Players are Computers (automatic game) |");
         System.out.println("=====================");
 
     }
@@ -167,7 +167,10 @@ public final class UserInterface {
             System.out.println("THE WINNER IS " + playerName);
         }
         else
-            System.out.println("Unbelieble there is a tie!!! no winner here...");
+        {
+            System.out.println("Unbelievable there is a tie!!! no winner here...");
+        }
+
     }
 
 
@@ -191,6 +194,7 @@ public final class UserInterface {
         while (!isValidFile) {
             PrintUserMessage("Please enter the path of the file");
             filePath = getString();
+            filePath=filePath.replaceAll("\\s","");
             File f = new File(filePath);
             if(f.exists() && !f.isDirectory()) {
                 isValidFile = true;
@@ -202,24 +206,8 @@ public final class UserInterface {
         return filePath;
     }
 
-//        while (!isValidFolder)
-//        {
-//            PrintUserMessage("Please enter the path of the folder");
-//            filePath = getString();
-//            File f = new File(filePath);
-//            if (f.exists() && f.isDirectory())
-//                isValidFolder = true;
-//            else
-//               PrintUserMessage("Invalid folder, please re-enter the folder path");
-//        }
-//
-//        PrintUserMessage("Please enter file name");
-//        fileName = getString();
-//
-//        fullFileName = filePath + "\\" + fileName;
-//        return fullFileName;
-//
-//    }
+
+
 
     public static String getString()
     {

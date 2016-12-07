@@ -11,6 +11,7 @@ public class Square {
     private boolean isEmpty;
    // private int value;
     private String value;
+    private int color;
 
 
     public Square(Point location) {
@@ -23,11 +24,12 @@ public class Square {
         this.isEmpty = true;
     }
 
-    public Square(Point location, String value)
+    public Square(Point location, String value,int color)
     {
         this.isEmpty = false;
         this.location = new Point(location.getRow(),location.getCol());
         this.value = value;
+        this.color = color;
     }
 
     public Point getLocation() {
@@ -36,6 +38,14 @@ public class Square {
 
     public void setLocation(Point location) {
         this.location = location;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 
     public boolean isEmpty() {
