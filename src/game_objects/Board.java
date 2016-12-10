@@ -4,7 +4,6 @@
 package game_objects;
 import game_interface.UserInterface;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -30,7 +29,7 @@ public class Board {
         boardType = type;
         gameBoard = new Square[size][size];
         marker = new Marker(0,0);
-       // boardRange = null;
+        boardRange = null;
         InitBoard();
     }
 

@@ -58,7 +58,6 @@ public class GameManager {
     {
         gameLogic = new GameLogic();
         runGame();
-       // startGame();
     }
 
 
@@ -66,6 +65,7 @@ public class GameManager {
     public void startGame() {
         UserInterface.PrintFirstMenu();
         int userChoise = UserInterface.GetUserInput(1, 3);
+        isLoadedGame = true;
         switch (userChoise) {
             case LOAD_GAME:
                 LoadGameFromXmlAndValidate();
@@ -121,6 +121,7 @@ public class GameManager {
 
     private void initGame()
     {
+        gameLogic.setStartTime(System.currentTimeMillis());
         setBasicPlayers();
         gameLoop();
     }
@@ -217,7 +218,7 @@ public class GameManager {
         }
         if (currentPlayer.getPlayerType() == ePlayerType.COMPUTER)
         {
-            UserInterface.PrintUserMessage("computer play his turn...");
+            UserInterface.PrintUserMessage("computer play his turn..he chose square (" + squareLocation.getRow()+","+squareLocation.getCol()+")");
         }
         updateUserData(squareValue); //update score and moves
         gameBoard.getMarker().setMarkerLocation(squareLocation.getRow(),squareLocation.getCol());
@@ -268,16 +269,16 @@ public class GameManager {
        int rowPlayerScore = rowPlayer.getScore();
        int ColPlayerScore = colPlayer.getScore();
        if (rowPlayerScore > ColPlayerScore)
-           UserInterface.PrintWinner(rowPlayer.getName());
+           UserInterface.PrintWinner("Row Player");
        else if (ColPlayerScore > rowPlayerScore )
-           UserInterface.PrintWinner(colPlayer.getName());
+           UserInterface.PrintWinner("Col Player");
            else //(ColPlayerScore  == rowPlayerScore )
            UserInterface.PrintWinner("TIE");
 
        UserInterface.PrintBoard(gameBoard.toString());
        UserInterface.ShowStatistics(rowPlayer.getNumOfMoves()+colPlayer.getNumOfMoves(),gameLogic.TotalGameTime(),rowPlayer.getScore(),colPlayer.getScore());
 
-       //startGame();//go back to start game here
+       startGame();//go back to start game here
    }
 
 
@@ -559,7 +560,7 @@ public class GameManager {
     {
         try {
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            Schema schema = schemaFactory.newSchema(new File("D:\\Numberiada\\src\\xml_resources\\Numberiada.xsd"));
+            Schema schema = schemaFactory.newSchema(new File("C:\\Users\\OR\\IdeaProjects\\Numberiada\\src\\xml_resources\\Numberiada.xsd"));
             JAXBContext jaxbContext = JAXBContext.newInstance(GameDescriptor.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             unmarshaller.setSchema(schema);

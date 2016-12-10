@@ -114,7 +114,7 @@ public final class UserInterface {
         return userMove;
     }
 
-    public static void ShowStatistics(int totalMoves, double gameTime,int RawPlayerscore,int ColumnPlayerScore)
+    public static void ShowStatistics(int totalMoves, String gameTime,int RawPlayerscore,int ColumnPlayerScore)
     {
         System.out.println("============================");
         System.out.println("| Game Statistics |");
@@ -123,6 +123,7 @@ public final class UserInterface {
         System.out.println("Game time : " + gameTime);
         System.out.println("Raw player score : " + RawPlayerscore);
         System.out.println("Column player score : " + ColumnPlayerScore);
+        System.out.println("============================");
     }
 
 

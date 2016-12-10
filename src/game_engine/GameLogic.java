@@ -1,5 +1,4 @@
 package game_engine;
-import game_objects.Board;
 import game_objects.Player;
 import game_objects.Point;
 
@@ -12,9 +11,7 @@ public  class GameLogic
     public static final int MIN_PLAYERS = 2;
     public static final int MAX_PLAYERS = 6;
 
-    private double totalTime;
-    private final long StartTime = System.currentTimeMillis();
-    private long endTime;
+    private long StartTime;
     private boolean isEndOfGame = false;
     private List<Player> players = new ArrayList<Player>();
     private int numOfPlayers ;
@@ -28,19 +25,33 @@ public  class GameLogic
         numOfPlayers = num;
     }
 
-    public long TotalGameTime() {
-        long gameTime = System.currentTimeMillis() - StartTime;
-        this.totalTime = gameTime / 1000.0;
-        return gameTime;
+    public void setStartTime(long startTime) {
+        StartTime = startTime;
     }
 
+    public String  TotalGameTime() {
+        long milliseconds  = System.currentTimeMillis() - StartTime;
+        int seconds = (int) (milliseconds / 1000) % 60 ;
+        int minutes = (int) ((milliseconds / (1000*60)) % 60);
+        return(minutes + ":" + seconds);
+    }
 
-    private void setEndOfGame() {
+    /*public String  TotalGameTime() {
+        long millis = System.currentTimeMillis() - StartTime;
+        return String.format("%d min, %d sec",
+                TimeUnit.MILLISECONDS.toMinutes(millis),
+                TimeUnit.MILLISECONDS.toSeconds(millis) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
+
+        );
+    }*/
+
+    /*private void setEndOfGame() {
         if (isEndOfGame) {
             this.endTime = System.currentTimeMillis();
         }
 
-    }
+    }*/
 
     public static int ComputerMove(int boardSize) {
         return (ThreadLocalRandom.current().nextInt(1, boardSize + 1));
