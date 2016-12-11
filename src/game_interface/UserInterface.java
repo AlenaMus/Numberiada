@@ -2,11 +2,14 @@ package game_interface;
 
 import game_engine.eTurn;
 import game_objects.Point;
+import sun.misc.IOUtils;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class UserInterface {
 
@@ -174,35 +177,27 @@ public final class UserInterface {
 
     }
 
-
-    public static void PrintError(String error)
-    {
-        System.out.println(error);
-    }
-
     public static void PrintUserMessage(String message)
     {
         System.out.println(message);
     }
 
-
-
     public static String getXMLfile()
     {
         String filePath = " ";
         boolean isValidFile = false;
+        String str ="\\\\";
 
         while (!isValidFile) {
             PrintUserMessage("Please enter the path of the file");
             filePath = getString();
-            filePath=filePath.replaceAll("\\s","");
+            filePath = filePath.replaceAll("^ +| +$|( )+", "$1");
             File f = new File(filePath);
             if(f.exists() && !f.isDirectory()) {
                 isValidFile = true;
             } else {
                 PrintUserMessage("File doesn't exist, please re-enter the folder path");
             }
-
         }
         return filePath;
     }

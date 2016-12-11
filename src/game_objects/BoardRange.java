@@ -28,11 +28,7 @@ public class BoardRange {
 
     public int RangeSize()
     {
-       int range = to - from;
-        if (from <= 0)
-        {
-            range++;
-        }
+       int range = to - from +1;
         return range;
     }
 

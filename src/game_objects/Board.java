@@ -91,48 +91,17 @@ public class Board {
             gameBoard[row-1][col-1].setValue(val);
         }
 
-        marker.setMarkerLocation(markerLocation.getRow()-1,markerLocation.getCol()-1);
+        marker.setMarkerLocation(markerLocation.getRow(),markerLocation.getCol());
         gameBoard[markerLocation.getRow()-1][markerLocation.getCol()-1].setValue(marker.getMarkerSign());
 
     }
 
-    private boolean checkRandomBoardValidity()
-    {
-        boolean isValidBoard = false;
-        int range = 0;
 
-        if(boardRange.getFrom() < boardRange.getTo())
-        {
-            range = boardRange.RangeSize();
 
-            if((boardSize*boardSize -1) >= range)
-            {
-                isValidBoard = true;
-            }
-            else
-            {
-                UserInterface.ValidationErrors.add(String.format("Random Board Creation Error: Board Size %d < Board Range numbers %d (from %d to %d)",
-                        boardSize*boardSize,range,boardRange.getFrom(),boardRange.getTo()));
-            }
-
-        }
-        else
-        {
-            UserInterface.ValidationErrors.add(String.format("Random Board Creation Error: Board Range numbers invalid from %d > to %d",
-                    boardRange.getFrom(),boardRange.getTo()));
-        }
-
-        return isValidBoard;
-
-    }
-
-    public boolean FillRandomBoard() {
+    public void FillRandomBoard() {
 
         int i = 0;
         int j = 0;
-        boolean isValidBoardData = checkRandomBoardValidity();
-
-        if (isValidBoardData) {
 
             Random rand = new Random();
 
@@ -180,8 +149,6 @@ public class Board {
                     }
             }
     }
-        return isValidBoardData;
-    }
 
 
 
@@ -204,22 +171,22 @@ public class Board {
     }
 
 
-private void printMatrix()
-{
-    for(int i =0 ;i<boardSize;i++)
-    {
-        for(int j=0;j<boardSize;j++)
-        {
-            System.out.print(gameBoard[i][j].getValue() +" ");
-        }
-        System.out.print("\n");
-    }
-}
+//private void printMatrix()
+//{
+//    for(int i =0 ;i<boardSize;i++)
+//    {
+//        for(int j=0;j<boardSize;j++)
+//        {
+//            System.out.print(gameBoard[i][j].getValue() +" ");
+//        }
+//        System.out.print("\n");
+//    }
+//}
 
 
     private String setBoardRow(int size)
     {
-        String row = "    ";
+        String row = "  ";
 
         for(int fr = 0 ; fr < size; fr++)
         {
@@ -288,6 +255,7 @@ private void printMatrix()
 
         space = spaces("");
         board.append(space+space);
+        board.append(" ");
         for( fr = 1 ; fr <= boardSize; fr++)
         {
             space = spaces(Square.ConvertFromIntToStringValue(fr));

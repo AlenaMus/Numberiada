@@ -58,32 +58,32 @@ public class GameManager {
     {
         gameLogic = new GameLogic();
         runGame();
+       // startGame();
     }
 
 
 
-    public void startGame() {
-        UserInterface.PrintFirstMenu();
-        int userChoise = UserInterface.GetUserInput(1, 3);
-        isLoadedGame = true;
-        switch (userChoise) {
-            case LOAD_GAME:
-                LoadGameFromXmlAndValidate();
-                isLoadedGame = true;
-              //  UserInterface.PrintBoard(gameBoard.toString());
-                break;
-            case START_GAME:
-                if (isLoadedGame)
-                    initGame();
-                else
-                    UserInterface.PrintUserMessage("Cannot start game. You need to load game XML file first!");
-                break;
-            case EXIT_GAME:
-                UserInterface.exitGameFromMainMenu();
-                break;
-        }
-
-    }
+//    public void startGame() {
+//        UserInterface.PrintFirstMenu();
+//        int userChoise = UserInterface.GetUserInput(1, 3);
+//        switch (userChoise) {
+//            case LOAD_GAME:
+//                LoadGameFromXmlAndValidate();
+//                isLoadedGame = true;
+//              //  UserInterface.PrintBoard(gameBoard.toString());
+//                break;
+//            case START_GAME:
+//                if (isLoadedGame)
+//                    initGame();
+//                else
+//                    UserInterface.PrintUserMessage("Cannot start game. You need to load game XML file first!");
+//                break;
+//            case EXIT_GAME:
+//                UserInterface.exitGameFromMainMenu();
+//                break;
+//        }
+//
+//    }
 
     private void runGame()
     {
@@ -93,10 +93,9 @@ public class GameManager {
 
         while(userChoise != EXIT_GAME)
         {
-            if(userChoise == LOAD_GAME)
-            {
-                LoadGameFromXmlAndValidate();
-                isLoadedGame = true;
+            if(userChoise == LOAD_GAME) {
+              isLoadedGame=LoadGameFromXmlAndValidate();
+
             }
             else if(userChoise == START_GAME)
             {
@@ -107,21 +106,18 @@ public class GameManager {
                 else
                 {
                     UserInterface.PrintUserMessage("Cannot start game. You need to load game XML file first!");
-
                 }
             }
 
             UserInterface.PrintFirstMenu();
             userChoise = UserInterface.GetUserInput(1, 3);
         }
-
             UserInterface.exitGameFromMainMenu();
     }
 
 
     private void initGame()
     {
-        gameLogic.setStartTime(System.currentTimeMillis());
         setBasicPlayers();
         gameLoop();
     }
@@ -137,7 +133,7 @@ public class GameManager {
         while (!isEndOfGame) {
             if (currentPlayer.getPlayerType() == ePlayerType.COMPUTER)
             {
-                makeMove(currentPlayer.getTurn());
+                makeMove();
                 switchPlayer();
             }
             else { //HUMAN TURN
@@ -150,7 +146,7 @@ public class GameManager {
                         UserInterface.PrintCurrentPlayer(currentPlayer.getTurn());
                         break;
                     case MAKE_A_MOVE:
-                        makeMove(currentPlayer.getTurn());
+                        makeMove();
                         switchPlayer();
                         break;
                     case SHOW_STATISTICS:
@@ -173,7 +169,7 @@ public class GameManager {
         return chosenSquare;
     }
 
-    private void makeMove(eTurn playerTurn)
+    private void makeMove()
     {
         int chosenSquare;
         int squareValue = BAD_SQUARE ;
@@ -218,7 +214,7 @@ public class GameManager {
         }
         if (currentPlayer.getPlayerType() == ePlayerType.COMPUTER)
         {
-            UserInterface.PrintUserMessage("computer play his turn..he chose square (" + squareLocation.getRow()+","+squareLocation.getCol()+")");
+            UserInterface.PrintUserMessage("computer play his turn...");
         }
         updateUserData(squareValue); //update score and moves
         gameBoard.getMarker().setMarkerLocation(squareLocation.getRow(),squareLocation.getCol());
@@ -259,7 +255,7 @@ public class GameManager {
     private void updateUserData(int squareValue) // in Player?
     {
         currentPlayer.setNumOfMoves(currentPlayer.getNumOfMoves()+1); //maybe do totalmoves var in gameManager
-        currentPlayer.setScore(currentPlayer.getScore() + squareValue);
+        currentPlayer.setScore(squareValue);
     }
 
 
@@ -269,16 +265,16 @@ public class GameManager {
        int rowPlayerScore = rowPlayer.getScore();
        int ColPlayerScore = colPlayer.getScore();
        if (rowPlayerScore > ColPlayerScore)
-           UserInterface.PrintWinner("Row Player");
+           UserInterface.PrintWinner("Row Player"); //rowPlayer.getName()
        else if (ColPlayerScore > rowPlayerScore )
-           UserInterface.PrintWinner("Col Player");
+           UserInterface.PrintWinner("Column Player"); //colPlayer.getName()
            else //(ColPlayerScore  == rowPlayerScore )
            UserInterface.PrintWinner("TIE");
 
        UserInterface.PrintBoard(gameBoard.toString());
        UserInterface.ShowStatistics(rowPlayer.getNumOfMoves()+colPlayer.getNumOfMoves(),gameLogic.TotalGameTime(),rowPlayer.getScore(),colPlayer.getScore());
 
-       startGame();//go back to start game here
+       //startGame();//go back to start game here
    }
 
 
@@ -377,34 +373,44 @@ public class GameManager {
 
 
 
-    public void LoadGameFromXmlAndValidate() {
+    private boolean LoadGameFromXmlAndValidate() {
         boolean  isValidXML = false;
+        String inValidXML = "Invalid XML File, please load valid xml file !\n ";
         String filePath = "";
        // File gameFile;
         GameDescriptor loadedGame = null;
         newList.clear();
+        UserInterface.ValidationErrors.clear();
 
-        while (!isValidXML)
-        {
+       // while (!isValidXML)
+       // {
             filePath = UserInterface.getXMLfile();
             loadedGame = loadGameFromFile(filePath);
-            isValidXML = checkXMLData(loadedGame);
-            if (!isValidXML)
-            {
-                UserInterface.PrintError("Invalid XML File, please load valid xml file !\n ");
-                UserInterface.PrintValidationErrors();
-            }
-        }
+               if(loadedGame!=null) {
+                 isValidXML = checkXMLData(loadedGame);
+               }
+             if (!isValidXML) {
+                    if(!UserInterface.ValidationErrors.contains(inValidXML)) {
+                        UserInterface.ValidationErrors.add(inValidXML);
+                    }
+                    UserInterface.PrintValidationErrors();
+                }
+                else {
 
-        loadDataFromJaxbToGame(loadedGame); //setBoard in Basic
-        UserInterface.PrintUserMessage("The XML Game file Loaded Successfully");
+                 loadDataFromJaxbToGame(loadedGame); //setBoard in Basic
+                 UserInterface.PrintUserMessage("The XML Game file Loaded Successfully");
+              }
+
+        //}
+
+        return isValidXML;
     }
 
 
     private boolean checkXMLData(GameDescriptor loadedGame)
     {
         int index;
-        boolean isValidXMLData = true;
+        boolean isValidXMLData = false;
 
         String gameType = loadedGame.getGameType();
         isValidXMLData = checkBoardXML(loadedGame);
@@ -414,7 +420,7 @@ public class GameManager {
                 isValidXMLData = checkAndSetPlayersXML(loadedGame.getPlayers());
             }
             else if(eGameType.valueOf(gameType) == eGameType.AdvanceDynamic) {
-                 // isValidXMLData = checkAdvanceDynamicXML(loadedGame.getDynamicPlayers());
+                  // isValidXMLData = checkAdvanceDynamicXML(loadedGame.getDynamicPlayers());
             }
             else {
                 isValidXMLData = false;
@@ -449,7 +455,8 @@ public class GameManager {
             {
                 if(boardType.equals(eBoardType.Random))
                 {
-                    isValidBoard = checkRandomBoard(structure.getRange()); //board range check
+                    isValidBoard =checkRandomBoardValidity(structure.getRange(),size);
+
                 }
                 else
                 {
@@ -467,6 +474,35 @@ public class GameManager {
         return isValidBoard;
     }
 
+    private boolean checkRandomBoardValidity(Range boardRange,int boardSize)
+    {
+        boolean isValidBoard = false;
+        int range;
+
+        if(boardRange.getFrom() < boardRange.getTo())
+        {
+            range = boardRange.getTo() - boardRange.getFrom() +1;
+
+            if(((boardSize*boardSize -1) / range) > 0)
+            {
+                isValidBoard = true;
+            }
+            else
+            {
+                UserInterface.ValidationErrors.add(String.format("Random Board Validation Error: Board Size %d < Board Range numbers %d (from %d to %d)",
+                boardSize*boardSize,range,boardRange.getFrom(),boardRange.getTo()));
+            }
+
+        }
+        else
+        {
+            UserInterface.ValidationErrors.add(String.format("Random Board Validation Error: Board Range numbers invalid from %d > to %d",
+             boardRange.getFrom(),boardRange.getTo()));
+        }
+
+        return isValidBoard;
+
+    }
 
     private boolean checkExplicitBoard(Range range, List<jaxb.schema.generated.Square> squares, jaxb.schema.generated.Marker marker,int boardSize)
     {
@@ -485,26 +521,37 @@ public class GameManager {
             UserInterface.ValidationErrors.add(String.format("Explicit Board validation error: invalid column of marker location ! Must be in range  from %d  to %d",1,boardSize));
         }
 
-        for(jaxb.schema.generated.Square square :squares)
-        {
-            row = square.getRow().intValue();
-            col = square.getColumn().intValue();
-            val = square.getValue().intValue();
-            color = square.getColor();
+        if(isValidBoard) {
 
-            if(isInBoardRange(row,boardSize) && isInBoardRange(col,boardSize)) //location is ok
-            {
-                newSquare = new game_objects.Square(new Point(row,col),String.valueOf(val),color);
-                if(newList.contains(newSquare))
-                {
+            for (jaxb.schema.generated.Square square : squares) {
+                row = square.getRow().intValue();
+                col = square.getColumn().intValue();
+                val = square.getValue().intValue();
+                color = square.getColor();
+
+                if(!(row == marker.getRow().intValue() && col == marker.getColumn().intValue())) {
+
+                    if (isInBoardRange(row, boardSize) && isInBoardRange(col, boardSize)) //location is ok
+                    {
+                        newSquare = new game_objects.Square(new Point(row, col), String.valueOf(val), color);
+                        if (newList.contains(newSquare)) {
+                            isValidBoard = false;
+                            UserInterface.ValidationErrors.add(String.format("Explicit Board validation error:  square double location [%d,%d] existance!",
+                                    square.getRow().intValue(), square.getColumn().intValue()));
+                            break;
+                        } else {
+                            newList.add(newSquare);
+                        }
+                    } else {
+                        newList.clear();
+                        isValidBoard = false;
+                        UserInterface.ValidationErrors.add(String.format("Explicit Board Validation Error: Square row :%d,column:%d outside board size :%d", row, col, boardSize));
+                        break;
+                    }
+                }else{
                     isValidBoard = false;
-                    UserInterface.ValidationErrors.add(String.format("Explicit Board validation error:  square double location [%d,%d] existance!",
-                            square.getRow().intValue(),square.getColumn().intValue()));
+                    UserInterface.ValidationErrors.add(String.format("Explicit Board Validation Error: Square row :%d,column:%d is both @ marker location and play square location!", row, col));
                     break;
-                }
-                else
-                {
-                    newList.add(newSquare);
                 }
             }
         }
@@ -512,17 +559,6 @@ public class GameManager {
         return isValidBoard;
     }
 
-    private boolean checkRandomBoard(Range range)
-    {
-        boolean isValidBoard = true;
-        if(range.getFrom() >= range.getTo())
-        {
-            isValidBoard = false;
-            UserInterface.ValidationErrors.add(String.format("Random Board range not valid : %d > = %d",range.getFrom(),range.getTo()));
-        }
-        return isValidBoard;
-
-    }
 
     private boolean isInBoardRange(int num, int size)
     {
@@ -560,8 +596,9 @@ public class GameManager {
     {
         try {
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            Schema schema = schemaFactory.newSchema(new File("C:\\Users\\OR\\IdeaProjects\\Numberiada\\src\\xml_resources\\Numberiada.xsd"));
+            Schema schema = schemaFactory.newSchema(new File("./xml_resources/Numberiada.xsd"));
             JAXBContext jaxbContext = JAXBContext.newInstance(GameDescriptor.class);
+
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             unmarshaller.setSchema(schema);
             GameDescriptor JaxbGame;
@@ -569,11 +606,13 @@ public class GameManager {
             return JaxbGame;
         }
         catch (JAXBException e) {
-            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, e);
+            //Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, e);
+            UserInterface.ValidationErrors.add("Load Game from File Error : Invalid XML !");
             return null;
         }
         catch (SAXException e) {
-            Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, e);
+           // Logger.getLogger(UserInterface.class.getName()).log(Level.SEVERE, null, e);
+            UserInterface.ValidationErrors.add( "Load Game from File Error : Invalid XML !");
             return null;
         }
     }
