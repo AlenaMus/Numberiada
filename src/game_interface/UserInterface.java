@@ -66,7 +66,7 @@ public final class UserInterface {
         System.out.println("|        1. Show board and current player ");
         System.out.println("|        2. Make a move        ");
         System.out.println("|        3. Show statistics        ");
-        System.out.println("|        4. Exit game        ");
+        System.out.println("|        4. Leave game        ");
         System.out.println("============================");
     }
 
@@ -124,7 +124,7 @@ public final class UserInterface {
         System.out.println("============================");
         System.out.println("Total moves in the game : " + totalMoves);
         System.out.println("Game time : " + gameTime);
-        System.out.println("Raw player score : " + RawPlayerscore);
+        System.out.println("Row player score : " + RawPlayerscore);
         System.out.println("Column player score : " + ColumnPlayerScore);
         System.out.println("============================");
     }
@@ -163,6 +163,7 @@ public final class UserInterface {
     public static void exitGameFromMainMenu()
     {
         System.out.println("bye bye!!\nO.A 2016 © ");
+        System.exit(0);
     }
 
     public static void PrintWinner(String playerName)
@@ -186,7 +187,6 @@ public final class UserInterface {
     {
         String filePath = " ";
         boolean isValidFile = false;
-        String str ="\\\\";
 
         while (!isValidFile) {
             PrintUserMessage("Please enter the path of the file");

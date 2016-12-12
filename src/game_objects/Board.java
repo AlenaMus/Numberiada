@@ -9,8 +9,8 @@ import java.util.Random;
 
 public class Board {
 
-    private static final int MIN_SIZE = 5;
-    private static final int MAX_SIZE = 50;
+    public static final int MIN_SIZE = 5;
+    public static final int MAX_SIZE = 50;
 
     private int boardSize;
     private eBoardType boardType;
