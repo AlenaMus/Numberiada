@@ -83,39 +83,44 @@ public class GameManager {
         int option;
 
         gameLogic.setCurrentPlayer(gameLogic.getRowPlayer());
-        UserInterface.PrintUserMessage("Lets Start the Game ...\n Choose an option from the menu below :");
-        gameLogic.setStartTime(System.currentTimeMillis());
-        while (!gameLogic.isEndOfGame) {
-            if (gameLogic.getCurrentPlayer().getPlayerType() == ePlayerType.COMPUTER)
-            {
-                gameLogic.makeMove();
-                gameLogic.switchPlayer();
-            }
-            else { //HUMAN TURN
-                UserInterface.PrintSecondMenu();
-                option = UserInterface.GetUserInput(SHOW_BOARD_AND_CURRENT_PLAYER, LEAVE_GAME);
+        if (!gameLogic.InitMoveCheck())
+        {
+            return;
 
-                switch (option) {
-                    case SHOW_BOARD_AND_CURRENT_PLAYER:
-                        UserInterface.PrintBoard(gameLogic.getGameBoard().toString());
-                        UserInterface.PrintCurrentPlayer(gameLogic.getCurrentPlayer().getTurn());
-                        break;
-                    case MAKE_A_MOVE:
-                        gameLogic.makeMove();
-                        gameLogic.switchPlayer();
-                        break;
-                    case SHOW_STATISTICS:
-                        UserInterface.ShowStatistics(gameLogic.getRowPlayer().getNumOfMoves() + gameLogic.getColPlayer().getNumOfMoves(), gameLogic.TotalGameTime(), gameLogic.getRowPlayer().getScore(), gameLogic.getColPlayer().getScore());
-                        break;
-                    case LEAVE_GAME: //go To main Menu
-                        gameLogic.isEndOfGame = true;
-                        break;
+        }
+        else {
+            UserInterface.PrintUserMessage("Lets Start the Game ...\n Choose an option from the menu below :");
+            gameLogic.setStartTime(System.currentTimeMillis());
+            while (!gameLogic.isEndOfGame) {
+                if (gameLogic.getCurrentPlayer().getPlayerType() == ePlayerType.COMPUTER) {
+                    gameLogic.makeMove();
+                    gameLogic.switchPlayer();
+                } else { //HUMAN TURN
+                    UserInterface.PrintSecondMenu();
+                    option = UserInterface.GetUserInput(SHOW_BOARD_AND_CURRENT_PLAYER, LEAVE_GAME);
 
+                    switch (option) {
+                        case SHOW_BOARD_AND_CURRENT_PLAYER:
+                            UserInterface.PrintBoard(gameLogic.getGameBoard().toString());
+                            UserInterface.PrintCurrentPlayer(gameLogic.getCurrentPlayer().getTurn());
+                            break;
+                        case MAKE_A_MOVE:
+                            gameLogic.makeMove();
+                            gameLogic.switchPlayer();
+                            break;
+                        case SHOW_STATISTICS:
+                            UserInterface.ShowStatistics(gameLogic.getRowPlayer().getNumOfMoves() + gameLogic.getColPlayer().getNumOfMoves(), gameLogic.TotalGameTime(), gameLogic.getRowPlayer().getScore(), gameLogic.getColPlayer().getScore());
+                            break;
+                        case LEAVE_GAME: //go To main Menu
+                            gameLogic.isEndOfGame = true;
+                            break;
+
+                    }
                 }
             }
-        }
 
-       setEndOfGame();
+            setEndOfGame();
+        }
     }
 
    private void exitGame()
@@ -126,7 +131,7 @@ public class GameManager {
    private void setEndOfGame()
    {
        gameRound++;
-       gameLogic.gameOver();
+      // gameLogic.gameOver();
        runGame();
    }
 

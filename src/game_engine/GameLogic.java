@@ -204,7 +204,7 @@ public class GameLogic
             else {
                 isEndOfGame = true;
                 UserInterface.PrintUserMessage("Col player have no moves ! GAME OVER");
-                //setEndOfGame();
+                gameOver();
             }
         }
         else //(currentPlayer.equals(colPlayer))
@@ -214,12 +214,25 @@ public class GameLogic
             else {
                 isEndOfGame = true;
                 UserInterface.PrintUserMessage("Row player have no moves ! GAME OVER");
-                // setEndOfGame();
+                gameOver();
             }
         }
     }
 
 
+    public boolean InitMoveCheck()
+    {
+        boolean canMove = true;
+
+        if (!(gameBoard.isRowPlayerHaveMoves(gameBoard.getMarker().getMarkerLocation())))
+        {
+            isEndOfGame = true;
+            UserInterface.PrintUserMessage("Row player have no moves ! GAME OVER");
+            gameOver();
+            canMove = false;
+        }
+        return canMove;
+    }
 
     private int updateBoard(Point squareLocation) //implement in Board - returns updated value of row/column
     {

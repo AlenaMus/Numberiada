@@ -36,7 +36,7 @@ public final class UserInterface {
         System.out.println("|            MENU           |");
         System.out.println("============================");
         System.out.println("| Options:                  |");
-        System.out.println("|        1. Load level      |");
+        System.out.println("|        1. Load game file  |");
         System.out.println("|        2. Start game      |");
         System.out.println("|        3. Exit game       |");
         System.out.println("|        ================   |");
