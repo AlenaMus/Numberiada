@@ -171,19 +171,6 @@ public class Board {
     }
 
 
-//private void printMatrix()
-//{
-//    for(int i =0 ;i<boardSize;i++)
-//    {
-//        for(int j=0;j<boardSize;j++)
-//        {
-//            System.out.print(gameBoard[i][j].getValue() +" ");
-//        }
-//        System.out.print("\n");
-//    }
-//}
-
-
     private String setBoardRow(int size)
     {
         String row = "  ";
@@ -255,12 +242,15 @@ public class Board {
 
         space = spaces("");
         board.append(space+space);
-        board.append(" ");
+
         for( fr = 1 ; fr <= boardSize; fr++)
         {
             space = spaces(Square.ConvertFromIntToStringValue(fr));
+
             board.append(fr);
             board.append(space+" ");
+
+
         }
         board.append("\n");
         board.append(boardRow);

@@ -358,20 +358,22 @@ public class GameLogic
         // while (!isValidXML)
         // {
         filePath = UserInterface.getXMLfile();
-        loadedGame = loadGameFromFile(filePath);
-        if(loadedGame!=null) {
-            isValidXML = checkXMLData(loadedGame);
-        }
-        if (!isValidXML) {
-            if(!UserInterface.ValidationErrors.contains(inValidXML)) {
-                UserInterface.ValidationErrors.add(inValidXML);
+        if(!filePath.isEmpty()) {
+            loadedGame = loadGameFromFile(filePath);
+            if (loadedGame != null) {
+                isValidXML = checkXMLData(loadedGame);
             }
-            UserInterface.PrintValidationErrors();
+            if (!isValidXML) {
+                if (!UserInterface.ValidationErrors.contains(inValidXML)) {
+                    UserInterface.ValidationErrors.add(inValidXML);
+                }
+                UserInterface.PrintValidationErrors();
+            } else {
+                loadDataFromJaxbToGame(loadedGame); //setBoard in Basic
+                UserInterface.PrintUserMessage("The XML Game file Loaded Successfully");
+            }
         }
-        else {
-            loadDataFromJaxbToGame(loadedGame); //setBoard in Basic
-            UserInterface.PrintUserMessage("The XML Game file Loaded Successfully");
-        }
+
 
         //}
 
