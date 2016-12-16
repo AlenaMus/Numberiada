@@ -9,9 +9,12 @@ import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -575,7 +578,9 @@ public class GameLogic
     {
         try {
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            Schema schema = schemaFactory.newSchema(new File("./xml_resources/Numberiada.xsd"));
+            InputStream xmlFileInputStream = GameLogic.class.getResourceAsStream("/xml_resources/Numberiada.xsd");
+            Source schemaSource = new StreamSource(xmlFileInputStream);
+            Schema schema = schemaFactory.newSchema(schemaSource);
             JAXBContext jaxbContext = JAXBContext.newInstance(GameDescriptor.class);
 
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
