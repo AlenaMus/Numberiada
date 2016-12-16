@@ -153,7 +153,7 @@ public class GameLogic
 
     public int makeComputerMove()
     {
-        return GameLogic.ComputerMove(gameBoard.GetBoardSize());
+        return ComputerMove(gameBoard.GetBoardSize());
     }
 
     public void makeMove()
