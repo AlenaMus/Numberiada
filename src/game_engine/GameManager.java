@@ -8,14 +8,14 @@ import game_objects.*;
 
 public class GameManager {
 
-    public static final int LOAD_GAME = 1;
-    public static final int START_GAME = 2;
-    public static final int EXIT_GAME = 3;
+    private static final int LOAD_GAME = 1;
+    private static final int START_GAME = 2;
+    private static final int EXIT_GAME = 3;
 
-    public static final int SHOW_BOARD_AND_CURRENT_PLAYER = 1;
-    public static final int MAKE_A_MOVE = 2;
-    public static final int SHOW_STATISTICS = 3;
-    public static final int LEAVE_GAME = 4;
+    private static final int SHOW_BOARD_AND_CURRENT_PLAYER = 1;
+    private static final int MAKE_A_MOVE = 2;
+    private static final int SHOW_STATISTICS = 3;
+    private static final int LEAVE_GAME = 4;
     public static final int BAD_SQUARE = 100;
 
     private static int gameRound = 0;
@@ -112,6 +112,7 @@ public class GameManager {
                             UserInterface.ShowStatistics(gameLogic.getRowPlayer().getNumOfMoves() + gameLogic.getColPlayer().getNumOfMoves(), gameLogic.TotalGameTime(), gameLogic.getRowPlayer().getScore(), gameLogic.getColPlayer().getScore());
                             break;
                         case LEAVE_GAME: //go To main Menu
+                            gameLogic.gameOver();
                             gameLogic.isEndOfGame = true;
                             break;
 
@@ -131,7 +132,6 @@ public class GameManager {
    private void setEndOfGame()
    {
        gameRound++;
-      // gameLogic.gameOver();
        runGame();
    }
 

@@ -116,14 +116,28 @@ public class GameLogic
     }*/
     public void gameOver()
     {
-        int rowPlayerScore = getRowPlayer().getScore();
-        int ColPlayerScore = getColPlayer().getScore();
-        if (rowPlayerScore > ColPlayerScore)
-            UserInterface.PrintWinner("Row Player"); //rowPlayer.getName()
-        else if (ColPlayerScore > rowPlayerScore )
-            UserInterface.PrintWinner("Column Player"); //colPlayer.getName()
-        else //(ColPlayerScore  == rowPlayerScore )
-            UserInterface.PrintWinner("TIE");
+        if(isEndOfGame) {
+            int rowPlayerScore = getRowPlayer().getScore();
+            int ColPlayerScore = getColPlayer().getScore();
+            if (rowPlayerScore > ColPlayerScore)
+                UserInterface.PrintWinner("Row Player"); //rowPlayer.getName()
+            else if (ColPlayerScore > rowPlayerScore)
+                UserInterface.PrintWinner("Column Player"); //colPlayer.getName()
+            else //(ColPlayerScore  == rowPlayerScore )
+                UserInterface.PrintWinner("TIE");
+        }
+        else{
+            if(currentPlayer.checkPlayerTurn(rowPlayer))
+            {
+                UserInterface.PrintUserMessage("Row player left the game ...");
+                UserInterface.PrintWinner("Column Player");
+            }
+            else
+            {
+                UserInterface.PrintUserMessage("Column player left the game ...");
+                UserInterface.PrintWinner("Row Player");
+            }
+        }
         UserInterface.PrintBoard(getGameBoard().toString());
         UserInterface.ShowStatistics(getRowPlayer().getNumOfMoves()+getColPlayer().getNumOfMoves(),TotalGameTime(),getRowPlayer().getScore(),getColPlayer().getScore());
     }
