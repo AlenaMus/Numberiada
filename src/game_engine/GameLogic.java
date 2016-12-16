@@ -201,7 +201,7 @@ public class GameLogic
         }
         if (currentPlayer.getPlayerType() == ePlayerType.COMPUTER)
         {
-            UserInterface.PrintUserMessage("computer play his turn...");
+            UserInterface.PrintUserMessage("computer " + currentPlayer.getTurn()+ " play his turn...he chose square ("+ squareLocation.getRow() + "," +squareLocation.getCol()+ ")");
         }
         updateUserData(squareValue); //update score and moves
         gameBoard.getMarker().setMarkerLocation(squareLocation.getRow(),squareLocation.getCol());
