@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 import static game_engine.GameManager.BAD_SQUARE;
 
@@ -94,29 +95,18 @@ public class GameLogic
         StartTime = startTime;
     }
 
-    public String TotalGameTime() {
-        long milliseconds  = System.currentTimeMillis() - StartTime;
-        int seconds = (int) (milliseconds / 1000) % 60 ;
-        int minutes = (int) ((milliseconds / (1000*60)) % 60);
-        return(minutes + ":" + seconds);
+
+    public String  TotalGameTime()
+    {
+        long millis = System.currentTimeMillis() - StartTime;
+       return String.format("%02d:%02d",
+               TimeUnit.MILLISECONDS.toMinutes(millis),
+               TimeUnit.MILLISECONDS.toSeconds(millis) -
+               TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+
     }
 
-    /*public String  TotalGameTime() {
-        long millis = System.currentTimeMillis() - StartTime;
-        return String.format("%d min, %d sec",
-                TimeUnit.MILLISECONDS.toMinutes(millis),
-                TimeUnit.MILLISECONDS.toSeconds(millis) -
-                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
 
-        );
-    }*/
-
-    /*private void setEndOfGame() {
-        if (isEndOfGame) {
-            this.endTime = System.currentTimeMillis();
-        }
-
-    }*/
     public void gameOver()
     {
         if(isEndOfGame) {

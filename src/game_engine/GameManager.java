@@ -74,6 +74,7 @@ public class GameManager {
         }
         gameLogic.setBasicPlayers();
         gameLogic.isEndOfGame = false;
+        gameLogic.setStartTime(System.currentTimeMillis());
         gameLoop();
     }
 
@@ -90,7 +91,7 @@ public class GameManager {
         }
         else {
             UserInterface.PrintUserMessage("Lets Start the Game ...\n Choose an option from the menu below :");
-            gameLogic.setStartTime(System.currentTimeMillis());
+
             while (!gameLogic.isEndOfGame) {
                 if (gameLogic.getCurrentPlayer().getPlayerType() == ePlayerType.COMPUTER) {
                     gameLogic.makeMove();
