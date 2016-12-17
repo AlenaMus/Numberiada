@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="Numberiada:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/Numberiada_jar</output-path>
-    <root id="archive" name="Numberiada.jar">
-      <element id="module-output" name="Numberiada" />
-    </root>
-  </artifact>
-</component>

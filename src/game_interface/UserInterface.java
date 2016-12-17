@@ -182,24 +182,18 @@ public final class UserInterface {
 
     public static String getXMLfile()
     {
-        String filePath = " ";
-        boolean isValidFile = false;
+        String filePath;
 
-        while (!isValidFile) {
-            PrintUserMessage("Please enter the path of the file");
+            PrintUserMessage("Please enter full path of the file");
             filePath = getString();
             filePath = filePath.replaceAll("^ +| +$|( )+", "$1");
             File f = new File(filePath);
-            if(f.exists() && !f.isDirectory()) {
-                isValidFile = true;
-            } else {
-                PrintUserMessage("File doesn't exist, please re-enter the folder path");
+            if(!f.exists() || f.isDirectory()) {
+                filePath ="";
+                PrintUserMessage("File doesn't exist, please enter valid folder path!");
             }
-        }
         return filePath;
     }
-
-
 
 
     public static String getString()
