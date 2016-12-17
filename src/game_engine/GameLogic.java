@@ -469,7 +469,6 @@ public class GameLogic
                 UserInterface.ValidationErrors.add(String.format("Random Board Validation Error: Board Size %d < Board Range numbers %d (from %d to %d)",
                         boardSize*boardSize,range,boardRange.getFrom(),boardRange.getTo()));
             }
-
         }
         else
         {
