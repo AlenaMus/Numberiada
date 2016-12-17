@@ -48,7 +48,6 @@ public class GameManager {
                 if(isLoadedGame)
                 {
                     UserInterface.PrintBoard(gameLogic.getGameBoard().toString());
-
                 }
             }
             else if(userChoise == START_GAME)

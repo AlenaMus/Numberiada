@@ -358,22 +358,20 @@ public class GameLogic
         // while (!isValidXML)
         // {
         filePath = UserInterface.getXMLfile();
-        if(!filePath.isEmpty()) {
-            loadedGame = loadGameFromFile(filePath);
-            if (loadedGame != null) {
-                isValidXML = checkXMLData(loadedGame);
-            }
-            if (!isValidXML) {
-                if (!UserInterface.ValidationErrors.contains(inValidXML)) {
-                    UserInterface.ValidationErrors.add(inValidXML);
-                }
-                UserInterface.PrintValidationErrors();
-            } else {
-                loadDataFromJaxbToGame(loadedGame); //setBoard in Basic
-                UserInterface.PrintUserMessage("The XML Game file Loaded Successfully");
-            }
+        loadedGame = loadGameFromFile(filePath);
+        if(loadedGame!=null) {
+            isValidXML = checkXMLData(loadedGame);
         }
-
+        if (!isValidXML) {
+            if(!UserInterface.ValidationErrors.contains(inValidXML)) {
+                UserInterface.ValidationErrors.add(inValidXML);
+            }
+            UserInterface.PrintValidationErrors();
+        }
+        else {
+            loadDataFromJaxbToGame(loadedGame); //setBoard in Basic
+            UserInterface.PrintUserMessage("The XML Game file Loaded Successfully");
+        }
 
         //}
 
@@ -453,7 +451,12 @@ public class GameLogic
         boolean isValidBoard = false;
         int range;
 
-        if(boardRange.getFrom() <= boardRange.getTo())
+        if(!(boardRange.getFrom() >= -99 &&  boardRange.getTo() <= 99))
+        {
+            UserInterface.ValidationErrors.add(String.format("Random Board Validation Error: board range have to be in [-99,99] range "));
+            return isValidBoard;
+        }
+        if(boardRange.getFrom() < boardRange.getTo())
         {
             range = boardRange.getTo() - boardRange.getFrom() +1;
 
@@ -503,6 +506,10 @@ public class GameLogic
                 val = square.getValue().intValue();
                 color = square.getColor();
 
+                if ((val < -99 )|| (val > 99)) {
+                    UserInterface.ValidationErrors.add(String.format("Explicit Board Validation Error: squares values must be in between -99 and 99" ));
+                    return isValidBoard = false;
+                }
                 if(!(row == marker.getRow().intValue() && col == marker.getColumn().intValue())) {
 
                     if (isInBoardRange(row, boardSize) && isInBoardRange(col, boardSize)) //location is ok
