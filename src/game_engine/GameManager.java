@@ -45,6 +45,11 @@ public class GameManager {
             {
                 isLoadedGame=gameLogic.LoadGameFromXmlAndValidate();
                 gameRound = 0;
+                if(isLoadedGame)
+                {
+                    UserInterface.PrintBoard(gameLogic.getGameBoard().toString());
+
+                }
             }
             else if(userChoise == START_GAME)
             {
@@ -75,6 +80,7 @@ public class GameManager {
         gameLogic.setBasicPlayers();
         gameLogic.isEndOfGame = false;
         gameLogic.setStartTime(System.currentTimeMillis());
+        UserInterface.PrintBoard(gameLogic.getGameBoard().toString());
         gameLoop();
     }
 

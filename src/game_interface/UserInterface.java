@@ -2,14 +2,11 @@ package game_interface;
 
 import game_engine.eTurn;
 import game_objects.Point;
-import sun.misc.IOUtils;
 
-import java.io.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public final class UserInterface {
 
@@ -162,7 +159,7 @@ public final class UserInterface {
 
     public static void exitGameFromMainMenu()
     {
-        System.out.println("bye bye!!\nO.A 2016 © ");
+        System.out.println("bey bey!!\nO.A 2016 © ");
         System.exit(0);
     }
 

@@ -451,7 +451,12 @@ public class GameLogic
         boolean isValidBoard = false;
         int range;
 
-        if(boardRange.getFrom() < boardRange.getTo())
+        if (!((boardRange.getFrom()  >= -99) && (boardRange.getTo() <= 99 )))
+        {
+            UserInterface.ValidationErrors.add(String.format("Random Board Validation Error: Board Range have to be between [-99,99]" ));
+            return  isValidBoard;
+        }
+        if((boardRange.getFrom() < boardRange.getTo()) )
         {
             range = boardRange.getTo() - boardRange.getFrom() +1;
 
