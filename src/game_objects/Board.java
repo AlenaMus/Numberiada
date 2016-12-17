@@ -242,6 +242,10 @@ public class Board {
 
         space = spaces("");
         board.append(space+space);
+        if(boardSize < 10)
+        {
+            board.append(" ");
+        }
 
         for( fr = 1 ; fr <= boardSize; fr++)
         {
@@ -303,18 +307,18 @@ public class Board {
         return squareValue;
     }
 
-     public boolean isGameOver(Point markerLocation)
-     {
-         int MarkerRow = markerLocation.getRow()-1;
-         int MarkerCol = markerLocation.getCol()-1;
-         for (int i=0; i < boardSize; i++)
-             if ((!gameBoard[MarkerRow][i].isEmpty()) && (!gameBoard[MarkerRow][i].getValue().equals(marker.getMarkerSign())))
-                 return false;
-             for (int i=0; i < boardSize; i++)
-                 if ((!gameBoard[i][MarkerCol].isEmpty() )&& (!gameBoard[i][MarkerCol].getValue().equals(marker.getMarkerSign())))
-                     return false;
-         return true;
-     }
+//     public boolean isGameOver(Point markerLocation)
+//     {
+//         int MarkerRow = markerLocation.getRow()-1;
+//         int MarkerCol = markerLocation.getCol()-1;
+//         for (int i=0; i < boardSize; i++)
+//             if ((!gameBoard[MarkerRow][i].isEmpty()) && (!gameBoard[MarkerRow][i].getValue().equals(marker.getMarkerSign())))
+//                 return false;
+//             for (int i=0; i < boardSize; i++)
+//                 if ((!gameBoard[i][MarkerCol].isEmpty() )&& (!gameBoard[i][MarkerCol].getValue().equals(marker.getMarkerSign())))
+//                     return false;
+//         return true;
+//     }
 
      public boolean isRowPlayerHaveMoves(Point markerLocation)
      {
