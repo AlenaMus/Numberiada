@@ -453,10 +453,10 @@ public class GameLogic
 
         if(!(boardRange.getFrom() >= -99 &&  boardRange.getTo() <= 99))
         {
-            UserInterface.ValidationErrors.add(String.format("Random Board Validation Error: board range have to be in [-99,99] range "));
+            UserInterface.ValidationErrors.add(String.format("Random Board Validation Error: board range have to be in [-99,99] range,range [%d,%d] is invalid ",boardRange.getFrom(),boardRange.getTo()));
             return isValidBoard;
         }
-        if(boardRange.getFrom() < boardRange.getTo())
+        if(boardRange.getFrom() <= boardRange.getTo())
         {
             range = boardRange.getTo() - boardRange.getFrom() +1;
 
@@ -507,8 +507,10 @@ public class GameLogic
                 color = square.getColor();
 
                 if ((val < -99 )|| (val > 99)) {
-                    UserInterface.ValidationErrors.add(String.format("Explicit Board Validation Error: squares values must be in between -99 and 99" ));
-                    return isValidBoard = false;
+                    UserInterface.ValidationErrors.add("Explicit Board Validation Error: squares values must be in between -99 and 99" );
+                    isValidBoard = false;
+                    break;
+
                 }
                 if(!(row == marker.getRow().intValue() && col == marker.getColumn().intValue())) {
 
@@ -517,7 +519,7 @@ public class GameLogic
                         newSquare = new game_objects.Square(new Point(row, col), String.valueOf(val), color);
                         if (explicitSquares.contains(newSquare)) {
                             isValidBoard = false;
-                            UserInterface.ValidationErrors.add(String.format("Explicit Board validation error:  square double location [%d,%d] existance!",
+                            UserInterface.ValidationErrors.add(String.format("Explicit Board validation error: square double location [%d,%d] existance!",
                                     square.getRow().intValue(), square.getColumn().intValue()));
                             break;
                         } else {
