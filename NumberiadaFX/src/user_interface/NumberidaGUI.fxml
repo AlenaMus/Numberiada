@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="user_interface.GameController">
+    <content>
+        <BorderPane prefHeight="396.0" prefWidth="602.0">
+            <right>
+                <Pane prefHeight="367.0" prefWidth="167.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <Button fx:id="MakeAMoveButton" layoutX="59.0" layoutY="27.0" mnemonicParsing="false" onAction="#MakeAMoveButtonClicked" text="Make A Move" />
+                        <Button fx:id="RetireGameButton" layoutX="63.0" layoutY="65.0" mnemonicParsing="false" onAction="#RetireGameButtonClicked" text="Retire Game" />
+                        <Button fx:id="PrevButton" disable="true" layoutX="38.0" layoutY="267.0" mnemonicParsing="false" onAction="#PrevButtonClicked" text="PREV" />
+                        <Button fx:id="NextButton" disable="true" layoutX="103.0" layoutY="267.0" mnemonicParsing="false" onAction="#NextButtonClicked" text="NEXT" />
+                        <Label layoutX="60.0" layoutY="204.0" text="Replay Moves" textFill="#e80a0a">
+                            <font>
+                                <Font name="System Bold" size="13.0" />
+                            </font>
+                        </Label>
+                        <ImageView fitHeight="30.0" fitWidth="29.0" layoutX="111.0" layoutY="231.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../../../../../לימודים/ג'אווה/next.png" />
+                            </image>
+                        </ImageView>
+                        <ImageView fitHeight="22.0" fitWidth="35.0" layoutX="47.0" layoutY="235.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../../../../../לימודים/ג'אווה/arrows_back_forward.png" />
+                            </image>
+                        </ImageView>
+                    </children>
+                </Pane>
+            </right>
+            <top>
+                <Pane prefHeight="29.0" prefWidth="602.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <Button fx:id="LoadXmlFileButton" layoutX="14.0" layoutY="2.0" mnemonicParsing="false" onAction="#LoadXmlFileButtonClicked" text="Load Xml File" />
+                        <Button fx:id="StartGameButton" disable="true" layoutX="128.0" layoutY="3.0" mnemonicParsing="false" onAction="#StartGameButtonClicked" text="Start Game" />
+                    </children>
+                </Pane>
+            </top>
+            <left>
+                <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <Label layoutX="12.0" layoutY="31.0" text="Player ID" />
+                        <Label layoutX="10.0" layoutY="191.0" prefHeight="18.0" prefWidth="41.0" text="Move #" />
+                        <Label layoutX="8.0" layoutY="227.0" text="Players Scores" textFill="#f51010">
+                            <font>
+                                <Font name="System Bold" size="13.0" />
+                            </font>
+                        </Label>
+                        <Label layoutX="9.0" layoutY="63.0" text="Player Name" />
+                        <Label layoutX="10.0" layoutY="101.0" text="Player Type" />
+                        <Label layoutX="10.0" layoutY="136.0" text="Player Color" />
+                        <Label layoutX="8.0" layoutY="6.0" text="Player Info" textFill="#e80a0a">
+                            <font>
+                                <Font name="System Bold" size="13.0" />
+                            </font>
+                        </Label>
+                        <Label layoutX="8.0" layoutY="165.0" text="Game Info" textFill="#e80a0a">
+                            <font>
+                                <Font name="System Bold" size="13.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="PlayerIDLabel" layoutX="107.0" layoutY="31.0" />
+                        <Label fx:id="PlayerNameLabel" layoutX="107.0" layoutY="63.0" />
+                        <Label fx:id="PlayerTypeLabel" layoutX="107.0" layoutY="101.0" />
+                        <Label fx:id="PlayerColorLabel" layoutX="107.0" layoutY="136.0" />
+                        <Label fx:id="MoveNumberLabel" layoutX="86.0" layoutY="192.0" />
+                    </children>
+                </Pane>
+            </left>
+         <center>
+            <GridPane BorderPane.alignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+            </GridPane>
+         </center>
+        </BorderPane>
+    </content>
+</ScrollPane>
